@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceSets.main.resources.srcDirs("src/main/java").includes.addAll(["**/*.fxml", "**/*.css"])
+sourceSets.main.resources.srcDirs("src/main/resources").includes.addAll(["**/*.*"])
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    compile 'com.squareup.retrofit2:retrofit:2.9.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    compile 'org.kordamp.ikonli:ikonli-javafx:11.4.0'
+    compile 'org.kordamp.ikonli:ikonli-fontawesome-pack:11.4.0'
+
+    compile 'net.sourceforge.htmlunit:htmlunit:2.49.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1'
+    compile group: 'com.jfoenix', name: 'jfoenix', version: '9.0.9'
+    compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'org.controlsfx', name: 'controlsfx', version: '11.1.0'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+javafx {
+    version = "16"
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+
+mainClassName = 'Main'
