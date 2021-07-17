@@ -31,6 +31,8 @@ dependencies {
     compile group: 'com.jfoenix', name: 'jfoenix', version: '9.0.9'
     compile group: 'org.json', name: 'json', version: '20180813'
     compile group: 'org.controlsfx', name: 'controlsfx', version: '11.1.0'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
+
 
 }
 
