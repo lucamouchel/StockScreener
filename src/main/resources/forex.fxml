@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="216.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ForexController">
+   <children>
+      <FontIcon iconLiteral="fa-arrow-circle-o-right" iconSize="30" layoutX="183.0" layoutY="68.0" onMouseClicked="#reverseCurrencies" text="" />
+      <ChoiceBox fx:id="fromCurrency" layoutX="45.0" layoutY="43.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: GREY;" />
+      <Text layoutX="36.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From currency" />
+      <Text layoutX="279.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To currency" />
+      <ChoiceBox fx:id="toCurrency" layoutX="281.0" layoutY="43.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: GREY;" />
+      <TextField fx:id="amount" alignment="CENTER" layoutX="122.0" layoutY="95.0" onAction="#searchForexExchange" promptText="Amount" style="-fx-background-color: trANSPARENT; -fx-border-color: blACK; -fx-border-width: 0 0 1 0;" />
+      <Text fx:id="text" layoutX="32.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="328.7999389648437">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Label fx:id="errorLabel" alignment="CENTER" layoutX="24.0" layoutY="132.0" prefHeight="18.0" prefWidth="344.0" />
+      <Text layoutX="175.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reverse" />
+   </children>
+</AnchorPane>

@@ -1,66 +1,140 @@
+import javafx.scene.Cursor;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import org.json.JSONObject;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 public class CreateLineChart {
+  private CreateLineChart() {}
 
-    private CreateLineChart() {
+  public static AreaChart<String, Number> createChart(String symbol, String rangeSelected)
+      throws IOException, InterruptedException {
+
+    ArrayList<Double> values = IndividualStock.chartData(symbol, rangeSelected);
+    ArrayList<String> dates = IndividualStock.dates;
+    Map<String, Range> ranges =
+        Map.of(
+            "1 month",
+            Range.ONE_MONTH,
+            "3 months",
+            Range.THREE_MONTHS,
+            "6 months",
+            Range.SIX_MONTHS,
+            "1 year",
+            Range.ONE_YEAR,
+            "2 years",
+            Range.TWO_YEARS,
+            "5 years",
+            Range.FIVE_YEARS,
+            "Max",
+            Range.MAX_YEARS);
+    XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+    series.setName(rangeSelected);
+    final CategoryAxis xAxis = new CategoryAxis();
+    final NumberAxis yAxis = new NumberAxis();
+    yAxis.setLabel(IndividualStock.chartCurrency);
+
+    AreaChart<String, Number> areaChart = new AreaChart<>(xAxis, yAxis);
+    areaChart.setPrefHeight(383);
+    areaChart.setPrefWidth(494);
+    areaChart.setLayoutX(697);
+    areaChart.setLayoutY(229);
+    areaChart.setTitle("Stock Monitoring");
+
+    assert ranges.containsKey(rangeSelected);
+    yAxis.setAutoRanging(false);
+    yAxis.setLowerBound(values.stream().mapToInt(Double::intValue).min().orElse(0) - 5);
+    yAxis.setUpperBound(values.stream().mapToInt(Double::intValue).max().orElse(0) + 5);
+
+    switch (ranges.get(rangeSelected)) {
+      case ONE_MONTH:
+        for (int i = 0; i < values.size(); i++) setDataToChart(values, dates, series, i);
+        break;
+      case THREE_MONTHS:
+        for (int i = 0; i < values.size(); i += 3) setDataToChart(values, dates, series, i);
+        break;
+      case SIX_MONTHS:
+        for (int i = 0; i < values.size(); i += 8) setDataToChart(values, dates, series, i);
+        break;
+      case ONE_YEAR:
+        for (int i = 0; i < values.size(); i += 13) setDataToChart(values, dates, series, i);
+        break;
+      case TWO_YEARS:
+        for (int i = 0; i < values.size(); i += 30) setDataToChart(values, dates, series, i);
+        break;
+      case FIVE_YEARS:
+        for (int i = 0; i < values.size(); i += 50) setDataToChart(values, dates, series, i);
+        break;
+      case MAX_YEARS:
+        for (int i = 0; i < values.size(); i += 10) setDataToChart(values, dates, series, i);
+        break;
+    }
+    areaChart.getData().add(series);
+    return areaChart;
+  }
+
+  private static void setDataToChart(
+      ArrayList<Double> values,
+      ArrayList<String> dates,
+      XYChart.Series<String, Number> series,
+      int i) {
+    XYChart.Data<String, Number> data = new XYChart.Data<>(dates.get(i), values.get(i));
+    series.getData().add(data);
+    data.setNode(new HoveredThresholdNode((i == 0) ? 0 : values.get(i - 1), values.get(i)));
+  }
+
+  private enum Range {
+    ONE_MONTH,
+    THREE_MONTHS,
+    SIX_MONTHS,
+    ONE_YEAR,
+    TWO_YEARS,
+    FIVE_YEARS,
+    MAX_YEARS
+  }
+
+  private static class HoveredThresholdNode extends StackPane {
+    HoveredThresholdNode(double priorValue, double value) {
+      setPrefSize(10, 10);
+
+      final Label label = createDataThresholdLabel(priorValue, value);
+
+      setOnMouseEntered(
+          mouseEvent -> {
+            getChildren().setAll(label);
+            setCursor(Cursor.NONE);
+            toFront();
+          });
+      setOnMouseExited(
+          mouseEvent -> {
+            getChildren().clear();
+            setCursor(Cursor.DEFAULT);
+          });
     }
 
-    public static LineChart<String, Number> createChart(LineChart<String, Number> lineChart, String symbol) throws IOException {
-        lineChart.setPrefHeight(310);
-        lineChart.setPrefWidth(420);
-        lineChart.setLayoutX(600);
-        lineChart.setLayoutY(400);
-        lineChart.setTitle("Stock Monitoring");
-        String apiMonthlyURL = String.format("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=H33OBY74UXT9G1Z7", symbol);
-        JSONObject json = new JSONObject(WebLinks.getJsonString(apiMonthlyURL)).getJSONObject("Monthly Time Series");
+    private Label createDataThresholdLabel(double priorValue, double value) {
+      final Label label = new Label(value + "");
+      label.getStyleClass().addAll("default-color0", "chart-line-symbol", "chart-series-line");
+      label.setStyle("-fx-font-size: 10; -fx-font-weight: bold;");
 
-        List<Double> values = new ArrayList<>();
-        for (String str : WorkingDays.lastyearsMonthsValues){
-            values.add(Double.parseDouble(json.getJSONObject(str).getString("4. close")));
-        }
+      if (priorValue == 0) {
+        label.setTextFill(Color.DARKGRAY);
+      } else if (value > priorValue) {
+        label.setTextFill(Color.FORESTGREEN);
+      } else {
+        label.setTextFill(Color.FIREBRICK);
+      }
 
-
-
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        final CategoryAxis xAxis = new CategoryAxis();
-        final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Month");
-        lineChart =
-                new LineChart<>(xAxis, yAxis);
-        series.getData().add(new XYChart.Data<>("Jan 2020", values.get(0)));
-        series.getData().add(new XYChart.Data<>("Feb", values.get(1)));
-        series.getData().add(new XYChart.Data<>("Mar", values.get(2)));
-        series.getData().add(new XYChart.Data<>("Apr", values.get(3)));
-        series.getData().add(new XYChart.Data<>("May", values.get(4)));
-        series.getData().add(new XYChart.Data<>("Jun", values.get(5)));
-        series.getData().add(new XYChart.Data<>("Jul", values.get(6)));
-        series.getData().add(new XYChart.Data<>("Aug", values.get(7)));
-        series.getData().add(new XYChart.Data<>("Sep", values.get(8)));
-        series.getData().add(new XYChart.Data<>("Oct", values.get(9)));
-        series.getData().add(new XYChart.Data<>("Nov", values.get(10)));
-        series.getData().add(new XYChart.Data<>("Dec", values.get(11)));
-        lineChart.getData().add(series);
-
-        lineChart.setLayoutX(50);
-        return lineChart;
+      label.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+      return label;
     }
-
-
-
+  }
 }

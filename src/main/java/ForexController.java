@@ -6,14 +6,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -69,16 +64,5 @@ public class ForexController implements Initializable {
           fromCurrency.getItems().add(s);
           toCurrency.getItems().add(s);
         });
-  }
-
-  public static void main(String[] args) throws IOException, InterruptedException {
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol=AMZN&region=US"))
-            .header("x-rapidapi-key", "c58c838e38msh5e0d93eed17da54p10f366jsn41b0c8b57fe2")
-            .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
-            .method("GET", HttpRequest.BodyPublishers.noBody())
-            .build();
-    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-    System.out.println(response.body());
   }
 }

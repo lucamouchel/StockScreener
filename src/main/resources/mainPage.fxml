@@ -1,68 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="718.0" prefWidth="1061.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainPageController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="718.0" prefWidth="1203.0" style="-fx-background-color: white;"
+            xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="MainPageController">
     <children>
-        <ImageView fitHeight="211.0" fitWidth="1061.0">
+        <ImageView fitHeight="199.0" fitWidth="1217.0" layoutX="-14.0" layoutY="-1.0">
             <image>
-                <Image url="@purple.png" />
+                <Image url="@purple.png"/>
             </image>
         </ImageView>
-        <TextField fx:id="input" layoutX="38.0" layoutY="106.0" onAction="#onText" prefHeight="29.0" prefWidth="208.0" promptText="Enter Symbol" style="-fx-background-color: white;">
+        <TextField fx:id="input" layoutX="38.0" layoutY="106.0" onAction="#onText" prefHeight="29.0" prefWidth="208.0"
+                   promptText="Enter Symbol" style="-fx-background-color: white;">
             <font>
-                <Font size="13.0" />
+                <Font size="13.0"/>
             </font>
         </TextField>
-        <FontIcon fx:id="SEARCH" iconColor="#9a8c8c" iconLiteral="fa-search" iconSize="15" layoutX="219.0" layoutY="125.0" selectionEnd="1" text="" wrappingWidth="11.85714340209961" />
-        <Text fill="WHITE" layoutX="14.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stocks" wrappingWidth="113.12126922607422">
+        <FontIcon fx:id="SEARCH" iconColor="#9a8c8c" iconLiteral="fa-search" iconSize="15" layoutX="219.0"
+                  layoutY="125.0" selectionEnd="1" text="" wrappingWidth="11.85714340209961"/>
+        <Text fill="WHITE" layoutX="14.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stocks"
+              wrappingWidth="113.12126922607422">
             <font>
-                <Font name="System Bold" size="36.0" />
+                <Font name="System Bold" size="36.0"/>
             </font>
         </Text>
-        <MenuButton layoutX="38.0" layoutY="167.0" mnemonicParsing="false" style="-fx-background-color: grey; -fx-padding: 3; -fx-border-radius: 50;" text="Filter search">
+        <MenuButton layoutX="38.0" layoutY="154.0" mnemonicParsing="false"
+                    style="-fx-background-color: grey; -fx-padding: 3; -fx-border-radius: 50;" text="Filter search">
             <items>
-                <MenuItem mnemonicParsing="false" text="Stock value" />
-                <MenuItem mnemonicParsing="false" onAction="#openForexWindow" text="Forex" />
-                <MenuItem mnemonicParsing="false" text="Cryptocurrencies" />
+                <MenuItem mnemonicParsing="false" text="Stock value"/>
+                <MenuItem mnemonicParsing="false" onAction="#openForexWindow" text="Forex"/>
+                <MenuItem mnemonicParsing="false" text="Cryptocurrencies"/>
             </items>
         </MenuButton>
-        <VBox fx:id="vbox" alignment="CENTER" layoutX="348.0" layoutY="34.0" prefHeight="172.0" prefWidth="198.0" style="-fx-spacing: 10;" />
-        <Text fx:id="text" fill="WHITE" layoutX="17.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="1026.13671875" />
-        <DatePicker fx:id="datePicker" layoutX="805.0" layoutY="170.0" prefHeight="25.0" prefWidth="198.0" promptText="date from the last 6 months" />
-      <LineChart fx:id="lineChart" alternativeColumnFillVisible="true" horizontalGridLinesVisible="false" layoutX="386.0" layoutY="343.0" prefHeight="314.0" prefWidth="465.0" title="Stock monitoring">
-        <xAxis>
-          <CategoryAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT" />
-        </yAxis>
-      </LineChart>
-      <AnchorPane fx:id="pane" layoutX="373.0" layoutY="284.0" prefHeight="150.0" prefWidth="234.0" style="-fx-background-color: grey; -fx-background-radius: 20 20 20 20;" visible="false">
-         <children>
-            <Text fx:id="stockValue" layoutX="14.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" wrappingWidth="101.60000000000002">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Text>
-            <Text fx:id="stockName" layoutX="88.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" visible="false" wrappingWidth="57.60003662109375" />
-            <FontIcon fx:id="arrow" iconSize="20" layoutX="128.0" layoutY="83.0" selectionEnd="0" visible="false" wrappingWidth="35.39996337890625" />
-            <Text fx:id="percentage" layoutX="170.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" visible="false" wrappingWidth="57.60003662109375" />
-         </children>
-      </AnchorPane>
-      <VBox fx:id="big" layoutX="36.0" layoutY="270.0" prefHeight="402.0" prefWidth="208.0" />
+        <VBox fx:id="vbox" alignment="CENTER" layoutX="348.0" layoutY="34.0" prefHeight="172.0" prefWidth="198.0"
+              style="-fx-spacing: 10;"/>
+        <Text fx:id="text" fill="WHITE" layoutX="17.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              wrappingWidth="1026.13671875"/>
+        <DatePicker fx:id="datePicker" layoutX="805.0" layoutY="157.0" prefHeight="25.0" prefWidth="198.0"
+                    promptText="date from the last 6 months"/>
+        <AnchorPane fx:id="pane" layoutX="331.0" layoutY="272.0" prefHeight="354.0" prefWidth="355.0"
+                    style="-fx-background-color: #c3bbbb; -fx-background-radius: 20 20 20 20;" visible="false">
+            <children>
+                <VBox fx:id="singleStockBox" layoutX="14.0" layoutY="14.0" prefHeight="328.0" prefWidth="328.0"/>
+            </children>
+        </AnchorPane>
+        <VBox fx:id="stockList" layoutX="14.0" layoutY="272.0" prefHeight="402.0" prefWidth="208.0"/>
+        <ChoiceBox fx:id="rangeSelector" layoutX="879.0" layoutY="631.0" nodeOrientation="LEFT_TO_RIGHT"
+                   prefWidth="150.0" style="-fx-background-color: #DDD2D2FF;" visible="false"/>
     </children>
 </AnchorPane>
