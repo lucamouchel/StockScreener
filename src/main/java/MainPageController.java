@@ -31,12 +31,11 @@ public class MainPageController implements Initializable {
   @FXML private VBox vbox;
   @FXML private Text text;
   @FXML private DatePicker datePicker;
-  @FXML private VBox stockList, singleStockBox;
+  @FXML private VBox stockList, singleStockBox, newsBox;
   @FXML private ChoiceBox<String> rangeSelector;
   private String detectedSymbol;
   private AreaChart<String, Number> areaChart;
-
-  public void setListItems() throws IOException {}
+  @FXML private ScrollPane scrollPane;
 
   @FXML
   public void onText() throws IOException, InterruptedException {
@@ -66,20 +65,16 @@ public class MainPageController implements Initializable {
         symbolButton.setOnAction(
             e -> {
               String companyName = arr.getJSONObject(finalI).getString("2. name");
-              try {
-                new StockDetail(companyName, symbol, text).setCompanyDescription().setDetails();
-              } catch (IOException exception) {
-                exception.printStackTrace();
-              }
             });
       }
     } else {
+      scrollPane.setVisible(false);
+      newsBox.setVisible(false);
       pane.setVisible(true);
       if (!singleStockBox.getChildren().isEmpty()) singleStockBox.getChildren().clear();
       String userInput = input.getText();
       detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
       rangeSelector.setVisible(true);
-      rangeSelector.setValue("1 month");
       IndividualStock singleStock = new IndividualStock(detectedSymbol);
       setUpVbox(
           singleStockBox,
@@ -98,13 +93,13 @@ public class MainPageController implements Initializable {
       root.getChildren().add(areaChart);
       rangeSelector.setOnAction(
           e -> {
-            root.getChildren().remove(areaChart);
             try {
+              root.getChildren().remove(areaChart);
               areaChart = CreateLineChart.createChart(detectedSymbol, rangeSelector.getValue());
+              root.getChildren().add(areaChart);
             } catch (IOException | InterruptedException exception) {
               exception.printStackTrace();
             }
-            root.getChildren().add(areaChart);
           });
     }
     TextFields.bindAutoCompletion(input, potentialSymbols);
@@ -129,19 +124,22 @@ public class MainPageController implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     List<String> nasdaqTickers = new ArrayList<>();
     List<String> nyseTickers = new ArrayList<>();
+    List<String> amexTickers = new ArrayList<>();
     try {
       nasdaqTickers = WebLinks.getNASDAQTickers();
       nyseTickers = WebLinks.getNYSETickers();
+      amexTickers = WebLinks.getAMEXTickers();
     } catch (IOException exception) {
       exception.printStackTrace();
     }
-    List<String> possibleSymbols =
-        Stream.concat(nasdaqTickers.stream(), nyseTickers.stream()).collect(Collectors.toList());
+    List<String> possibleSymbols = concatLists(nasdaqTickers, nyseTickers, amexTickers);
     TextFields.bindAutoCompletion(input, possibleSymbols);
 
-    List<String> trendingList = new ArrayList<>(List.of());
-//         "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
-//         "ORCL"));
+    List<String> trendingList =
+        new ArrayList<>(
+            List.of( // ));
+                "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
+                "ORCL"));
 
     for (String stock : trendingList) {
       try {
@@ -155,10 +153,37 @@ public class MainPageController implements Initializable {
         exception.printStackTrace();
       }
     }
-    rangeSelector.setValue("1 month");
     rangeSelector
         .getItems()
         .addAll("1 month", "3 months", "6 months", "1 year", "2 years", "5 years", "Max");
+
+    // news info below
+
+    try {
+      String json = WebLinks.JSONNewsInfo();
+      JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
+      JSONArray arr = obj.getJSONArray("stream");
+      for (int i = 0; i < arr.length(); i++) {
+        JSONObject content = arr.getJSONObject(i).getJSONObject("content");
+        String url;
+        try {
+          url = content.getJSONObject("clickThroughUrl").getString("url");
+        } catch (JSONException jsonException) {
+          url = "www.google.com";
+        }
+        NewsInfo newsInfo =
+            new NewsInfo(
+                content.getString("title"), content.getString("pubDate").substring(0, 10), url);
+        newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
+      }
+    } catch (IOException | InterruptedException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  @SafeVarargs
+  private <T> List<T> concatLists(List<T>... lists) {
+    return Stream.of(lists).flatMap(List::stream).collect(Collectors.toList());
   }
 
   private void setUpVbox(

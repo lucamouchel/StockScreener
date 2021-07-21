@@ -96,6 +96,11 @@ public final class WebLinks {
     return new ArrayList<>(formattedJSONInfo(new JSONArray(json)));
   }
 
+  public static List<String> getAMEXTickers() throws IOException {
+    String json = getJsonString("https://dumbstockapi.com/stock?exchanges=AMEX");
+    return new ArrayList<>(formattedJSONInfo(new JSONArray(json)));
+  }
+
   public static List<String> formattedJSONInfo(JSONArray arr) {
     List<String> tickersForGivenExchange = new ArrayList<>();
     for (int i = 0; i < arr.length(); i++) {
@@ -146,6 +151,18 @@ public final class WebLinks {
             .header("x-rapidapi-key", "9cd176623emsh23291b97c3c65d1p1254bfjsncc92daed873d")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    return response.body();
+  }
+
+  public static String JSONNewsInfo() throws IOException, InterruptedException {
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("https://apidojo-yahoo-finance-v1.p.rapidapi.com/news/v2/list?region=US&snippetCount=10"))
+            .header("content-type", "text/plain")
+            .header("x-rapidapi-key", "9cd176623emsh23291b97c3c65d1p1254bfjsncc92daed873d")
+            .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
+            .method("POST", HttpRequest.BodyPublishers.ofString("Pass in the value of uuids field returned right in this endpoint to load the next page, or leave empty to load first page"))
             .build();
     HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     return response.body();
