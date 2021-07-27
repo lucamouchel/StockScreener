@@ -47,7 +47,7 @@ public class CreateLineChart {
     areaChart.setPrefWidth(494);
     areaChart.setLayoutX(697);
     areaChart.setLayoutY(229);
-    areaChart.setTitle("Stock Monitoring");
+    areaChart.setTitle("Stock Monitoring - " + symbol);
 
     assert ranges.containsKey(rangeSelected);
     yAxis.setAutoRanging(false);
@@ -58,25 +58,23 @@ public class CreateLineChart {
       case ONE_MONTH:
         for (int i = 0; i < values.size(); i++) setDataToChart(values, dates, series, i);
         break;
-      case THREE_MONTHS:
+      case THREE_MONTHS, MAX_YEARS:
         for (int i = 0; i < values.size(); i += 3) setDataToChart(values, dates, series, i);
         break;
       case SIX_MONTHS:
-        for (int i = 0; i < values.size(); i += 8) setDataToChart(values, dates, series, i);
+        for (int i = 0; i < values.size(); i += 5) setDataToChart(values, dates, series, i);
         break;
       case ONE_YEAR:
-        for (int i = 0; i < values.size(); i += 13) setDataToChart(values, dates, series, i);
-        break;
-      case TWO_YEARS:
-        for (int i = 0; i < values.size(); i += 30) setDataToChart(values, dates, series, i);
-        break;
-      case FIVE_YEARS:
-        for (int i = 0; i < values.size(); i += 50) setDataToChart(values, dates, series, i);
-        break;
-      case MAX_YEARS:
         for (int i = 0; i < values.size(); i += 10) setDataToChart(values, dates, series, i);
         break;
+      case TWO_YEARS:
+        for (int i = 0; i < values.size(); i += 20) setDataToChart(values, dates, series, i);
+        break;
+      case FIVE_YEARS:
+        for (int i = 0; i < values.size(); i += 30) setDataToChart(values, dates, series, i);
+        break;
     }
+    xAxis.setAutoRanging(true);
     areaChart.getData().add(series);
     return areaChart;
   }
@@ -124,15 +122,11 @@ public class CreateLineChart {
       final Label label = new Label(value + "");
       label.getStyleClass().addAll("default-color0", "chart-line-symbol", "chart-series-line");
       label.setStyle("-fx-font-size: 10; -fx-font-weight: bold;");
-
-      if (priorValue == 0) {
-        label.setTextFill(Color.DARKGRAY);
-      } else if (value > priorValue) {
+      if (value > priorValue) {
         label.setTextFill(Color.FORESTGREEN);
       } else {
         label.setTextFill(Color.FIREBRICK);
       }
-
       label.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
       return label;
     }

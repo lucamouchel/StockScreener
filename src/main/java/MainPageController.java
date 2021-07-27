@@ -3,6 +3,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -17,7 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.awt.*;
 import java.io.*;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MainPageController implements Initializable {
+  private final File file = new File("src/main/resources/portfolioStocks.txt");
   @FXML AnchorPane root, pane;
   @FXML private TextField input, portfolioStock;
   @FXML private VBox vbox;
@@ -39,7 +46,6 @@ public class MainPageController implements Initializable {
   @FXML private MenuButton myPortfolio;
   private List<String> bindingStocks = new ArrayList<>();
   private FileOutputStream outputStream;
-  private final File file = new File("src/main/resources/portfolioStocks.txt");
   private BufferedReader reader;
 
   @Override
@@ -57,9 +63,11 @@ public class MainPageController implements Initializable {
     bindingStocks = concatLists(nasdaqTickers, nyseTickers, amexTickers);
     TextFields.bindAutoCompletion(input, bindingStocks);
 
-    List<String> trendingList = new ArrayList<>(List.of(//));
-                    "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
-                    "ORCL"));
+    List<String> trendingList =
+        new ArrayList<>(
+            List.of(
+                "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
+                "ORCL"));
 
     for (String stock : trendingList) {
       try {
@@ -80,46 +88,41 @@ public class MainPageController implements Initializable {
 
     // news info below
 
-        try {
-          String json = WebLinks.JSONNewsInfo();
-          JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
-          JSONArray arr = obj.getJSONArray("stream");
-          for (int i = 0; i < arr.length(); i++) {
-            JSONObject content = arr.getJSONObject(i).getJSONObject("content");
-            String url;
-            try {
-              url = content.getJSONObject("clickThroughUrl").getString("url");
-            } catch (JSONException jsonException) {
-              url = "www.google.com";
-            }
-            NewsInfo newsInfo =
-                new NewsInfo(
-                    content.getString("title"), content.getString("pubDate").substring(0, 10),
-     url);
-            newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
-          }
-        } catch (IOException | InterruptedException exception) {
-          exception.printStackTrace();
-        }
-
     try {
       outputStream = new FileOutputStream(file, true);
       reader = new BufferedReader(new FileReader(file));
       String line;
-      while ((line = reader.readLine()) != null){
+      while ((line = reader.readLine()) != null) {
         MenuItem item = new MenuItem(line);
         String finalLine = line;
-        item.setOnAction(e -> {
-          try {
-            addSingleStockToPage(finalLine);
-          } catch (IOException | InterruptedException exception) {
-            exception.printStackTrace();
-          }
-        });
-        myPortfolio.getItems().add(item);
+        item.setOnAction(
+            e -> {
+              try {
+                addSingleStockToPage(finalLine);
+              } catch (IOException | InterruptedException exception) {
+                exception.printStackTrace();
+              }
+            });
+        myPortfolio.getItems().addAll(item, new SeparatorMenuItem());
       }
 
-    } catch (IOException exception) {
+      String json = WebLinks.JSONNewsInfo();
+      JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
+      JSONArray arr = obj.getJSONArray("stream");
+      for (int i = 0; i < arr.length(); i++) {
+        JSONObject content = arr.getJSONObject(i).getJSONObject("content");
+        String url;
+        try {
+          url = content.getJSONObject("clickThroughUrl").getString("url");
+        } catch (JSONException jsonException) {
+          url = "www.google.com";
+        }
+        NewsInfo newsInfo =
+            new NewsInfo(
+                content.getString("title"), content.getString("pubDate").substring(0, 10), url);
+        newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
+      }
+    } catch (IOException | InterruptedException exception) {
       exception.printStackTrace();
     }
   }
@@ -128,7 +131,6 @@ public class MainPageController implements Initializable {
   public void onText() throws IOException, InterruptedException {
     root.getChildren().remove(areaChart);
 
-    String symbolToFindURL = WebLinks.findSymbol(input.getText());
     List<String> potentialSymbols = new ArrayList<>();
     if (!vbox.getChildren().isEmpty()) {
       vbox.getChildren().clear();
@@ -136,45 +138,15 @@ public class MainPageController implements Initializable {
       // detailText.setText("");
     }
 
-    if (!input.getText().contains("|")) {
-      String json = WebLinks.getJsonString(symbolToFindURL);
-      JSONObject obj = new JSONObject(json);
-      JSONArray arr = obj.getJSONArray("bestMatches");
-      for (int i = 0; i < arr.length(); i++) {
-        String symbol = arr.getJSONObject(i).getString("1. symbol");
-        potentialSymbols.add(symbol);
+    String userInput = input.getText();
+    detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
+    addSingleStockToPage(detectedSymbol);
 
-        Button symbolButton = new Button(symbol);
-        symbolButton.setStyle("-fx-background-color: grey; -fx-padding: 3");
-        vbox.getChildren().add(symbolButton);
-
-        int finalI = i;
-        symbolButton.setOnAction(
-            e -> {
-              String companyName = arr.getJSONObject(finalI).getString("2. name");
-            });
-      }
-    } else {
-      String userInput = input.getText();
-      detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
-      addSingleStockToPage(detectedSymbol);
-    }
     TextFields.bindAutoCompletion(input, potentialSymbols);
   }
 
   private void addHbox(String info) {
     singleStockBox.getChildren().addAll(new HBox(new Text(info)), new Separator());
-  }
-
-  @FXML
-  public void openForexWindow() throws IOException {
-    FXMLLoader fxmlLoader = new FXMLLoader();
-    fxmlLoader.setLocation(Main.class.getResource("forex.fxml"));
-    Scene scene = new Scene(fxmlLoader.load(), 392, 216);
-    Stage stage = new Stage();
-    stage.setTitle("Forex");
-    stage.setScene(scene);
-    stage.show();
   }
 
   @FXML
@@ -193,7 +165,7 @@ public class MainPageController implements Initializable {
               exception.printStackTrace();
             }
           });
-      myPortfolio.getItems().add(stock);
+      myPortfolio.getItems().addAll(stock, new SeparatorMenuItem());
     } else {
       detectedSymbol = userInput;
       if (userInput.chars().mapToObj(c -> (char) c).allMatch(Character::isUpperCase)) {
@@ -206,7 +178,7 @@ public class MainPageController implements Initializable {
                 exception.printStackTrace();
               }
             });
-        myPortfolio.getItems().add(stock);
+        myPortfolio.getItems().addAll(stock, new SeparatorMenuItem());
       }
     }
 
@@ -232,6 +204,7 @@ public class MainPageController implements Initializable {
   }
 
   private void addSingleStockToPage(String symbol) throws IOException, InterruptedException {
+    root.getChildren().remove(areaChart);
     scrollPane.setVisible(false);
     newsBox.setVisible(false);
     pane.setVisible(true);
@@ -287,5 +260,26 @@ public class MainPageController implements Initializable {
     Text textWithColor = new Text(text);
     textWithColor.setFill(Paint.valueOf(String.valueOf(color)));
     return textWithColor;
+  }
+
+  @FXML
+  public void openForexWindow() throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(Main.class.getResource("forex.fxml"));
+    Scene scene = new Scene(fxmlLoader.load(), 392, 216);
+    Stage stage = new Stage();
+    stage.setTitle("Forex");
+    stage.setScene(scene);
+    stage.show();
+  }
+
+  @FXML
+  public void openCryptoWebsite() {
+    try {
+      URI uri = new URI("https://coinmarketcap.com/all/views/all/");
+      Desktop.getDesktop().browse(uri);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

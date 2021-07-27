@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -21,24 +21,17 @@
                 <Image url="@purple.png" />
             </image>
         </ImageView>
-        <TextField fx:id="input" layoutX="38.0" layoutY="106.0" onAction="#onText" prefHeight="29.0" prefWidth="208.0" promptText="Enter Symbol" style="-fx-background-color: white;">
+        <TextField fx:id="input" layoutX="38.0" layoutY="106.0" onAction="#onText" prefHeight="30.0" prefWidth="232.0" promptText="Enter Symbol" style="-fx-background-color: white;">
             <font>
                 <Font size="13.0" />
             </font>
         </TextField>
-        <FontIcon fx:id="SEARCH" iconColor="#9a8c8c" iconLiteral="fa-search" iconSize="15" layoutX="219.0" layoutY="125.0" selectionEnd="1" text="" wrappingWidth="11.85714340209961" />
+        <FontIcon fx:id="SEARCH" iconColor="#9a8c8c" iconLiteral="fa-search" iconSize="15" layoutX="241.0" layoutY="125.0" selectionEnd="1" text="" wrappingWidth="11.85714340209961" />
         <Text fill="WHITE" layoutX="14.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stocks" wrappingWidth="113.12126922607422">
             <font>
                 <Font name="System Bold" size="36.0" />
             </font>
         </Text>
-        <MenuButton layoutX="38.0" layoutY="154.0" mnemonicParsing="false" style="-fx-background-color: grey; -fx-padding: 3; -fx-border-radius: 50;" text="Filter search">
-            <items>
-                <MenuItem mnemonicParsing="false" text="Stock value" />
-                <MenuItem mnemonicParsing="false" onAction="#openForexWindow" text="Forex" />
-                <MenuItem mnemonicParsing="false" text="Cryptocurrencies" />
-            </items>
-        </MenuButton>
         <VBox fx:id="vbox" alignment="CENTER" layoutX="348.0" layoutY="34.0" prefHeight="172.0" prefWidth="198.0" style="-fx-spacing: 10;" />
         <Text fx:id="text" fill="WHITE" layoutX="14.0" layoutY="256.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="1026.13671875" />
       <AnchorPane fx:id="pane" layoutX="331.0" layoutY="272.0" prefHeight="354.0" prefWidth="355.0" style="-fx-background-color: #c3bbbb; -fx-background-radius: 20 20 20 20;" visible="false">
@@ -46,7 +39,7 @@
             <VBox fx:id="singleStockBox" layoutX="14.0" layoutY="14.0" prefHeight="328.0" prefWidth="328.0" />
          </children>
       </AnchorPane>
-      <VBox fx:id="stockList" layoutX="14.0" layoutY="272.0" prefHeight="402.0" prefWidth="232.0" />
+      <VBox fx:id="stockList" layoutX="38.0" layoutY="228.0" prefHeight="402.0" prefWidth="232.0" />
       <ChoiceBox fx:id="rangeSelector" layoutX="879.0" layoutY="631.0" nodeOrientation="LEFT_TO_RIGHT" prefWidth="150.0" style="-fx-background-color: #DDD2D2FF;" visible="false" />
       <ScrollPane fx:id="scrollPane" layoutX="360.0" layoutY="243.0" prefHeight="432.0" prefWidth="838.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: transparent;">
          <content>
@@ -56,6 +49,11 @@
       <Button fx:id="portfolio" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="829.0" layoutY="36.0" mnemonicParsing="false" onAction="#addStockToPortfolio" prefHeight="38.0" prefWidth="232.0" style="-fx-background-color: pink;" text="Add a stock to your personal portfolio" />
       <TextField fx:id="portfolioStock" layoutX="828.0" layoutY="107.0" onAction="#addStock" prefHeight="26.0" prefWidth="186.0" promptText="Enter symbol or company name" visible="false" />
       <Button fx:id="addStock" layoutX="1035.0" layoutY="108.0" mnemonicParsing="false" onAction="#addStock" style="-fx-background-color: pink;" text="+" visible="false" />
-      <MenuButton fx:id="myPortfolio" layoutX="1079.0" layoutY="42.0" mnemonicParsing="false" style="-fx-background-color: pink;" text="My Portfolio" />
+      <MenuButton fx:id="myPortfolio" layoutX="1079.0" layoutY="42.0" mnemonicParsing="false" style="-fx-background-color: pink;" text="My Portfolio">
+         <contextMenu>
+            <ContextMenu />
+         </contextMenu></MenuButton>
+      <Button layoutX="38.0" layoutY="154.0" mnemonicParsing="false" onAction="#openForexWindow" style="-fx-background-color: grey; -fx-label-padding: 3; -fx-border-radius: 20 20 20 20;" text="Forex exchange" />
+      <Button layoutX="156.0" layoutY="154.0" mnemonicParsing="false" onAction="#openCryptoWebsite" prefHeight="32.0" prefWidth="113.0" style="-fx-background-color: grey; -fx-label-padding: 3; -fx-border-radius: 20 20 20 20;" text="Cryptocurrencies" />
     </children>
 </AnchorPane>

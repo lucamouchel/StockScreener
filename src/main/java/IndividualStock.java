@@ -102,28 +102,27 @@ public final class IndividualStock {
   }
 
   public String getFiftyTwoWeekLow() {
-    return "52w low: " + json.getDouble("fiftyTwoWeekLow") + " " + currency;
+    return String.format("52w low: %s %s", json.getDouble("fiftyTwoWeekLow"), currency);
   }
 
   public String getFiftyTwoWeekHigh() {
-    return "52w high: " + json.getDouble("fiftyTwoWeekHigh") + " " + currency;
+    return String.format("52w high: %s %s", json.getDouble("fiftyTwoWeekHigh"), currency);
   }
 
   public String getMarketDayRange() {
-    return "Today's high - lows: "
-        + json.getString("regularMarketDayRange")
-        + " "
-        + json.getString("currency");
+    return String.format(
+        "Today's high - lows: %s %s",
+        json.getString("regularMarketDayRange"), json.getString("currency"));
   }
 
   public String getMarketCap() {
-    return "Market cap: " + String.format("%,.2f", json.getDouble("marketCap")) + " " + currency;
+    return String.format(
+        "Market cap: %s %s", String.format("%,.2f", json.getDouble("marketCap")), currency);
   }
 
   public String getShareVolume() {
-    return "Share Volume: "
-        + String.format("%,.2f", json.getDouble("regularMarketVolume"))
-        + " "
-        + currency;
+    return String.format(
+        "Share Volume: %s %s",
+        String.format("%,.2f", json.getDouble("regularMarketVolume")), currency);
   }
 }
