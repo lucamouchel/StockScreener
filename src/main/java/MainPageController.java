@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,56 +38,90 @@ public class MainPageController implements Initializable {
   @FXML private Button addStock;
   @FXML private MenuButton myPortfolio;
   private List<String> bindingStocks = new ArrayList<>();
+  private FileOutputStream outputStream;
+  private final File file = new File("src/main/resources/portfolioStocks.txt");
+  private BufferedReader reader;
 
-  @FXML
-  public void addStock() {
-    String detectedSymbol;
-    String userInput = portfolioStock.getText();
-    if (portfolioStock.getText().contains("|")) {
-      detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
-      MenuItem stock = new MenuItem(detectedSymbol);
-      stock.setOnAction(e -> {
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    List<String> nasdaqTickers = new ArrayList<>();
+    List<String> nyseTickers = new ArrayList<>();
+    List<String> amexTickers = new ArrayList<>();
+    try {
+      nasdaqTickers = WebLinks.getNASDAQTickers();
+      nyseTickers = WebLinks.getNYSETickers();
+      amexTickers = WebLinks.getAMEXTickers();
+    } catch (IOException exception) {
+      exception.printStackTrace();
+    }
+    bindingStocks = concatLists(nasdaqTickers, nyseTickers, amexTickers);
+    TextFields.bindAutoCompletion(input, bindingStocks);
+
+    List<String> trendingList = new ArrayList<>(List.of(//));
+                    "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
+                    "ORCL"));
+
+    for (String stock : trendingList) {
+      try {
+        IndividualStock individualStock = new IndividualStock(stock);
+        setUpVbox(
+            stockList,
+            stock,
+            individualStock,
+            Double.parseDouble(individualStock.shiftPercentage()));
+      } catch (IOException | InterruptedException | JSONException exception) {
+        exception.printStackTrace();
+      }
+    }
+    rangeSelector
+        .getItems()
+        .addAll("1 month", "3 months", "6 months", "1 year", "2 years", "5 years", "Max");
+    rangeSelector.setValue("1 month");
+
+    // news info below
+
         try {
-          setMenuItemAction(detectedSymbol);
+          String json = WebLinks.JSONNewsInfo();
+          JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
+          JSONArray arr = obj.getJSONArray("stream");
+          for (int i = 0; i < arr.length(); i++) {
+            JSONObject content = arr.getJSONObject(i).getJSONObject("content");
+            String url;
+            try {
+              url = content.getJSONObject("clickThroughUrl").getString("url");
+            } catch (JSONException jsonException) {
+              url = "www.google.com";
+            }
+            NewsInfo newsInfo =
+                new NewsInfo(
+                    content.getString("title"), content.getString("pubDate").substring(0, 10),
+     url);
+            newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
+          }
         } catch (IOException | InterruptedException exception) {
           exception.printStackTrace();
         }
-      });
-      myPortfolio.getItems().add(stock);
-    } else {
-      detectedSymbol = userInput;
-      if (userInput.chars().mapToObj(c -> (char) c).allMatch(Character::isUpperCase)) {
-        MenuItem stock = new MenuItem(detectedSymbol);
-        stock.setOnAction(e -> {
+
+    try {
+      outputStream = new FileOutputStream(file, true);
+      reader = new BufferedReader(new FileReader(file));
+      String line;
+      while ((line = reader.readLine()) != null){
+        MenuItem item = new MenuItem(line);
+        String finalLine = line;
+        item.setOnAction(e -> {
           try {
-            setMenuItemAction(detectedSymbol);
+            addSingleStockToPage(finalLine);
           } catch (IOException | InterruptedException exception) {
             exception.printStackTrace();
           }
         });
-        myPortfolio.getItems().add(stock);
+        myPortfolio.getItems().add(item);
       }
+
+    } catch (IOException exception) {
+      exception.printStackTrace();
     }
-    myPortfolio
-        .getItems()
-        .setAll(myPortfolio.getItems().stream().distinct().collect(Collectors.toList()));
-  }
-
-  private void setMenuItemAction(String symbol) throws IOException, InterruptedException {
-    root.getChildren().remove(areaChart);
-    scrollPane.setVisible(false);
-    newsBox.setVisible(false);
-    pane.setVisible(true);
-    addSingleStockToPage(symbol);
-  }
-
-
-
-  @FXML
-  public void addStockToPortfolio() {
-    portfolioStock.setVisible(true);
-    addStock.setVisible(true);
-    TextFields.bindAutoCompletion(portfolioStock, bindingStocks);
   }
 
   @FXML
@@ -121,9 +155,6 @@ public class MainPageController implements Initializable {
             });
       }
     } else {
-      scrollPane.setVisible(false);
-      newsBox.setVisible(false);
-      pane.setVisible(true);
       String userInput = input.getText();
       detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
       addSingleStockToPage(detectedSymbol);
@@ -146,65 +177,53 @@ public class MainPageController implements Initializable {
     stage.show();
   }
 
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
-    List<String> nasdaqTickers = new ArrayList<>();
-    List<String> nyseTickers = new ArrayList<>();
-    List<String> amexTickers = new ArrayList<>();
-    try {
-      nasdaqTickers = WebLinks.getNASDAQTickers();
-      nyseTickers = WebLinks.getNYSETickers();
-      amexTickers = WebLinks.getAMEXTickers();
-    } catch (IOException exception) {
-      exception.printStackTrace();
-    }
-    bindingStocks = concatLists(nasdaqTickers, nyseTickers, amexTickers);
-    TextFields.bindAutoCompletion(input, bindingStocks);
-
-    List<String> trendingList = new ArrayList<>(List.of());
-    //                "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
-    //                "ORCL"));
-
-    for (String stock : trendingList) {
-      try {
-        IndividualStock individualStock = new IndividualStock(stock);
-        setUpVbox(
-            stockList,
-            stock,
-            individualStock,
-            Double.parseDouble(individualStock.shiftPercentage()));
-      } catch (IOException | InterruptedException | JSONException exception) {
-        exception.printStackTrace();
+  @FXML
+  public void addStock() throws IOException {
+    String detectedSymbol;
+    String userInput = portfolioStock.getText();
+    MenuItem stock;
+    if (portfolioStock.getText().contains("|")) {
+      detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
+      stock = new MenuItem(detectedSymbol);
+      stock.setOnAction(
+          e -> {
+            try {
+              setMenuItemAction(detectedSymbol);
+            } catch (IOException | InterruptedException exception) {
+              exception.printStackTrace();
+            }
+          });
+      myPortfolio.getItems().add(stock);
+    } else {
+      detectedSymbol = userInput;
+      if (userInput.chars().mapToObj(c -> (char) c).allMatch(Character::isUpperCase)) {
+        stock = new MenuItem(detectedSymbol);
+        stock.setOnAction(
+            e -> {
+              try {
+                setMenuItemAction(detectedSymbol);
+              } catch (IOException | InterruptedException exception) {
+                exception.printStackTrace();
+              }
+            });
+        myPortfolio.getItems().add(stock);
       }
     }
-    rangeSelector.setValue("1 month");
-    rangeSelector
-        .getItems()
-        .addAll("1 month", "3 months", "6 months", "1 year", "2 years", "5 years", "Max");
 
-    // news info below
+    outputStream.write(detectedSymbol.getBytes());
+    outputStream.write(System.getProperty("line.separator").getBytes());
+  }
 
-    //    try {
-    //      String json = WebLinks.JSONNewsInfo();
-    //      JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
-    //      JSONArray arr = obj.getJSONArray("stream");
-    //      for (int i = 0; i < arr.length(); i++) {
-    //        JSONObject content = arr.getJSONObject(i).getJSONObject("content");
-    //        String url;
-    //        try {
-    //          url = content.getJSONObject("clickThroughUrl").getString("url");
-    //        } catch (JSONException jsonException) {
-    //          url = "www.google.com";
-    //        }
-    //        NewsInfo newsInfo =
-    //            new NewsInfo(
-    //                content.getString("title"), content.getString("pubDate").substring(0, 10),
-    // url);
-    //        newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
-    //      }
-    //    } catch (IOException | InterruptedException exception) {
-    //      exception.printStackTrace();
-    //    }
+  private void setMenuItemAction(String symbol) throws IOException, InterruptedException {
+    root.getChildren().remove(areaChart);
+    addSingleStockToPage(symbol);
+  }
+
+  @FXML
+  public void addStockToPortfolio() {
+    portfolioStock.setVisible(true);
+    addStock.setVisible(true);
+    TextFields.bindAutoCompletion(portfolioStock, bindingStocks);
   }
 
   @SafeVarargs
@@ -213,14 +232,14 @@ public class MainPageController implements Initializable {
   }
 
   private void addSingleStockToPage(String symbol) throws IOException, InterruptedException {
+    scrollPane.setVisible(false);
+    newsBox.setVisible(false);
+    pane.setVisible(true);
     if (!singleStockBox.getChildren().isEmpty()) singleStockBox.getChildren().clear();
     rangeSelector.setVisible(true);
     IndividualStock singleStock = new IndividualStock(symbol);
     setUpVbox(
-            singleStockBox,
-            symbol,
-            singleStock,
-            Double.parseDouble(singleStock.shiftPercentage()));
+        singleStockBox, symbol, singleStock, Double.parseDouble(singleStock.shiftPercentage()));
     addHbox(singleStock.getName());
     addHbox(singleStock.getExchange());
     addHbox(singleStock.getFiftyTwoWeekLow());
@@ -232,15 +251,15 @@ public class MainPageController implements Initializable {
     areaChart = CreateLineChart.createChart(symbol, rangeSelector.getValue());
     root.getChildren().add(areaChart);
     rangeSelector.setOnAction(
-            e -> {
-              try {
-                root.getChildren().remove(areaChart);
-                areaChart = CreateLineChart.createChart(symbol, rangeSelector.getValue());
-                root.getChildren().add(areaChart);
-              } catch (IOException | InterruptedException exception) {
-                exception.printStackTrace();
-              }
-            });
+        e -> {
+          try {
+            root.getChildren().remove(areaChart);
+            areaChart = CreateLineChart.createChart(symbol, rangeSelector.getValue());
+            root.getChildren().add(areaChart);
+          } catch (IOException | InterruptedException exception) {
+            exception.printStackTrace();
+          }
+        });
   }
 
   private void setUpVbox(
