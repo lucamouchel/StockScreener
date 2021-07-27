@@ -126,18 +126,19 @@ public final class WebLinks {
   public static String stockOptionsJSON(String symbol) throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(String.format("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-options?symbol=%s&date=1562284800&region=US", symbol)))
-            .header("x-rapidapi-key", "9cd176623emsh23291b97c3c65d1p1254bfjsncc92daed873d")
+            .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
     HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
     return response.body();
   }
 
   public static String stockHistoryJSON(String symbol) throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(String.format("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v3/get-historical-data?symbol=%s&region=US", symbol)))
-            .header("x-rapidapi-key", "9cd176623emsh23291b97c3c65d1p1254bfjsncc92daed873d")
+            .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
@@ -148,7 +149,7 @@ public final class WebLinks {
   public static String JSONChartData(String symbol, String range) throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(String.format("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=1d&symbol=%s&range=%s&region=US", symbol, range)))
-            .header("x-rapidapi-key", "9cd176623emsh23291b97c3c65d1p1254bfjsncc92daed873d")
+            .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
@@ -160,7 +161,7 @@ public final class WebLinks {
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("https://apidojo-yahoo-finance-v1.p.rapidapi.com/news/v2/list?region=US&snippetCount=10"))
             .header("content-type", "text/plain")
-            .header("x-rapidapi-key", "9cd176623emsh23291b97c3c65d1p1254bfjsncc92daed873d")
+            .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("POST", HttpRequest.BodyPublishers.ofString("Pass in the value of uuids field returned right in this endpoint to load the next page, or leave empty to load first page"))
             .build();

@@ -27,15 +27,68 @@ import java.util.stream.Stream;
 
 public class MainPageController implements Initializable {
   @FXML AnchorPane root, pane;
-  @FXML private TextField input;
+  @FXML private TextField input, portfolioStock;
   @FXML private VBox vbox;
   @FXML private Text text;
-  @FXML private DatePicker datePicker;
   @FXML private VBox stockList, singleStockBox, newsBox;
   @FXML private ChoiceBox<String> rangeSelector;
   private String detectedSymbol;
   private AreaChart<String, Number> areaChart;
   @FXML private ScrollPane scrollPane;
+  @FXML private Button addStock;
+  @FXML private MenuButton myPortfolio;
+  private List<String> bindingStocks = new ArrayList<>();
+
+  @FXML
+  public void addStock() {
+    String detectedSymbol;
+    String userInput = portfolioStock.getText();
+    if (portfolioStock.getText().contains("|")) {
+      detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
+      MenuItem stock = new MenuItem(detectedSymbol);
+      stock.setOnAction(e -> {
+        try {
+          setMenuItemAction(detectedSymbol);
+        } catch (IOException | InterruptedException exception) {
+          exception.printStackTrace();
+        }
+      });
+      myPortfolio.getItems().add(stock);
+    } else {
+      detectedSymbol = userInput;
+      if (userInput.chars().mapToObj(c -> (char) c).allMatch(Character::isUpperCase)) {
+        MenuItem stock = new MenuItem(detectedSymbol);
+        stock.setOnAction(e -> {
+          try {
+            setMenuItemAction(detectedSymbol);
+          } catch (IOException | InterruptedException exception) {
+            exception.printStackTrace();
+          }
+        });
+        myPortfolio.getItems().add(stock);
+      }
+    }
+    myPortfolio
+        .getItems()
+        .setAll(myPortfolio.getItems().stream().distinct().collect(Collectors.toList()));
+  }
+
+  private void setMenuItemAction(String symbol) throws IOException, InterruptedException {
+    root.getChildren().remove(areaChart);
+    scrollPane.setVisible(false);
+    newsBox.setVisible(false);
+    pane.setVisible(true);
+    addSingleStockToPage(symbol);
+  }
+
+
+
+  @FXML
+  public void addStockToPortfolio() {
+    portfolioStock.setVisible(true);
+    addStock.setVisible(true);
+    TextFields.bindAutoCompletion(portfolioStock, bindingStocks);
+  }
 
   @FXML
   public void onText() throws IOException, InterruptedException {
@@ -71,36 +124,9 @@ public class MainPageController implements Initializable {
       scrollPane.setVisible(false);
       newsBox.setVisible(false);
       pane.setVisible(true);
-      if (!singleStockBox.getChildren().isEmpty()) singleStockBox.getChildren().clear();
       String userInput = input.getText();
       detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
-      rangeSelector.setVisible(true);
-      IndividualStock singleStock = new IndividualStock(detectedSymbol);
-      setUpVbox(
-          singleStockBox,
-          detectedSymbol,
-          singleStock,
-          Double.parseDouble(singleStock.shiftPercentage()));
-      addHbox(singleStock.getName());
-      addHbox(singleStock.getExchange());
-      addHbox(singleStock.getFiftyTwoWeekLow());
-      addHbox(singleStock.getFiftyTwoWeekHigh());
-      addHbox(singleStock.getMarketDayRange());
-      addHbox(singleStock.previousDayClose());
-      addHbox(singleStock.getMarketCap());
-      addHbox(singleStock.getShareVolume());
-      areaChart = CreateLineChart.createChart(detectedSymbol, rangeSelector.getValue());
-      root.getChildren().add(areaChart);
-      rangeSelector.setOnAction(
-          e -> {
-            try {
-              root.getChildren().remove(areaChart);
-              areaChart = CreateLineChart.createChart(detectedSymbol, rangeSelector.getValue());
-              root.getChildren().add(areaChart);
-            } catch (IOException | InterruptedException exception) {
-              exception.printStackTrace();
-            }
-          });
+      addSingleStockToPage(detectedSymbol);
     }
     TextFields.bindAutoCompletion(input, potentialSymbols);
   }
@@ -132,14 +158,12 @@ public class MainPageController implements Initializable {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
-    List<String> possibleSymbols = concatLists(nasdaqTickers, nyseTickers, amexTickers);
-    TextFields.bindAutoCompletion(input, possibleSymbols);
+    bindingStocks = concatLists(nasdaqTickers, nyseTickers, amexTickers);
+    TextFields.bindAutoCompletion(input, bindingStocks);
 
-    List<String> trendingList =
-        new ArrayList<>(
-            List.of( // ));
-                "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
-                "ORCL"));
+    List<String> trendingList = new ArrayList<>(List.of());
+    //                "AMZN", "AAPL", "GOOGL", "TSLA", "NFLX", "FB", "MSFT", "AMD", "MRNA", "NVDA",
+    //                "ORCL"));
 
     for (String stock : trendingList) {
       try {
@@ -153,37 +177,70 @@ public class MainPageController implements Initializable {
         exception.printStackTrace();
       }
     }
+    rangeSelector.setValue("1 month");
     rangeSelector
         .getItems()
         .addAll("1 month", "3 months", "6 months", "1 year", "2 years", "5 years", "Max");
 
     // news info below
 
-    try {
-      String json = WebLinks.JSONNewsInfo();
-      JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
-      JSONArray arr = obj.getJSONArray("stream");
-      for (int i = 0; i < arr.length(); i++) {
-        JSONObject content = arr.getJSONObject(i).getJSONObject("content");
-        String url;
-        try {
-          url = content.getJSONObject("clickThroughUrl").getString("url");
-        } catch (JSONException jsonException) {
-          url = "www.google.com";
-        }
-        NewsInfo newsInfo =
-            new NewsInfo(
-                content.getString("title"), content.getString("pubDate").substring(0, 10), url);
-        newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
-      }
-    } catch (IOException | InterruptedException exception) {
-      exception.printStackTrace();
-    }
+    //    try {
+    //      String json = WebLinks.JSONNewsInfo();
+    //      JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
+    //      JSONArray arr = obj.getJSONArray("stream");
+    //      for (int i = 0; i < arr.length(); i++) {
+    //        JSONObject content = arr.getJSONObject(i).getJSONObject("content");
+    //        String url;
+    //        try {
+    //          url = content.getJSONObject("clickThroughUrl").getString("url");
+    //        } catch (JSONException jsonException) {
+    //          url = "www.google.com";
+    //        }
+    //        NewsInfo newsInfo =
+    //            new NewsInfo(
+    //                content.getString("title"), content.getString("pubDate").substring(0, 10),
+    // url);
+    //        newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
+    //      }
+    //    } catch (IOException | InterruptedException exception) {
+    //      exception.printStackTrace();
+    //    }
   }
 
   @SafeVarargs
   private <T> List<T> concatLists(List<T>... lists) {
     return Stream.of(lists).flatMap(List::stream).collect(Collectors.toList());
+  }
+
+  private void addSingleStockToPage(String symbol) throws IOException, InterruptedException {
+    if (!singleStockBox.getChildren().isEmpty()) singleStockBox.getChildren().clear();
+    rangeSelector.setVisible(true);
+    IndividualStock singleStock = new IndividualStock(symbol);
+    setUpVbox(
+            singleStockBox,
+            symbol,
+            singleStock,
+            Double.parseDouble(singleStock.shiftPercentage()));
+    addHbox(singleStock.getName());
+    addHbox(singleStock.getExchange());
+    addHbox(singleStock.getFiftyTwoWeekLow());
+    addHbox(singleStock.getFiftyTwoWeekHigh());
+    addHbox(singleStock.getMarketDayRange());
+    addHbox(singleStock.previousDayClose());
+    addHbox(singleStock.getMarketCap());
+    addHbox(singleStock.getShareVolume());
+    areaChart = CreateLineChart.createChart(symbol, rangeSelector.getValue());
+    root.getChildren().add(areaChart);
+    rangeSelector.setOnAction(
+            e -> {
+              try {
+                root.getChildren().remove(areaChart);
+                areaChart = CreateLineChart.createChart(symbol, rangeSelector.getValue());
+                root.getChildren().add(areaChart);
+              } catch (IOException | InterruptedException exception) {
+                exception.printStackTrace();
+              }
+            });
   }
 
   private void setUpVbox(
