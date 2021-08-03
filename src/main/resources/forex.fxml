@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="216.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ForexController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="216.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.ForexController">
    <children>
       <FontIcon iconLiteral="fa-arrow-circle-o-right" iconSize="30" layoutX="183.0" layoutY="68.0" onMouseClicked="#reverseCurrencies" text="" />
       <ChoiceBox fx:id="fromCurrency" layoutX="45.0" layoutY="43.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: GREY;" />

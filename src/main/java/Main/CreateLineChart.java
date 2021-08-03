@@ -1,3 +1,5 @@
+package Main;
+
 import javafx.scene.Cursor;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
@@ -46,7 +48,7 @@ public class CreateLineChart {
     areaChart.setPrefHeight(383);
     areaChart.setPrefWidth(494);
     areaChart.setLayoutX(697);
-    areaChart.setLayoutY(229);
+    areaChart.setLayoutY(235);
     areaChart.setTitle("Stock Monitoring - " + symbol);
 
     assert ranges.containsKey(rangeSelected);

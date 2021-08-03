@@ -1,3 +1,5 @@
+package Main;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,14 +11,12 @@ import java.util.Date;
 import java.util.Map;
 
 public final class IndividualStock {
-  public static ArrayList<String> dates = new ArrayList<>();
+  public static final ArrayList<String> dates = new ArrayList<>();
   public static String chartCurrency;
-  private final String symbol;
   private final JSONObject json;
   private final String currency;
 
   public IndividualStock(String symbol) throws IOException, InterruptedException {
-    this.symbol = symbol;
     this.json =
         new JSONObject(WebLinks.stockOptionsJSON(symbol))
             .getJSONObject("meta")
@@ -85,7 +85,7 @@ public final class IndividualStock {
     }
   }
 
-  public String shiftPercentage() throws IOException, InterruptedException {
+  public String shiftPercentage() {
     return String.format("%.2f", json.getDouble("regularMarketChangePercent"));
   }
 

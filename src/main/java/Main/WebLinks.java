@@ -1,3 +1,5 @@
+package Main;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,11 +12,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public final class WebLinks {
@@ -66,39 +64,59 @@ public final class WebLinks {
     return obj.getJSONObject("Realtime Currency Exchange Rate").getString("5. Exchange Rate");
   }
 
-  ///////YAHOO FINANCE API BELOW
+  /////// YAHOO FINANCE API BELOW
 
   public static String stockOptionsJSON(String symbol) throws IOException, InterruptedException {
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(String.format("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-options?symbol=%s&date=1562284800&region=US", symbol)))
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(
+                URI.create(
+                    String.format(
+                        "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-options?symbol=%s&date=1562284800&region=US",
+                        symbol)))
             .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
-    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response =
+        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     return response.body();
   }
 
-  public static String JSONChartData(String symbol, String range) throws IOException, InterruptedException {
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(String.format("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=1d&symbol=%s&range=%s&region=US", symbol, range)))
+  public static String JSONChartData(String symbol, String range)
+      throws IOException, InterruptedException {
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(
+                URI.create(
+                    String.format(
+                        "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=1d&symbol=%s&range=%s&region=US",
+                        symbol, range)))
             .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
-    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response =
+        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     return response.body();
   }
 
   public static String JSONNewsInfo() throws IOException, InterruptedException {
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://apidojo-yahoo-finance-v1.p.rapidapi.com/news/v2/list?region=US&snippetCount=10"))
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(
+                URI.create(
+                    "https://apidojo-yahoo-finance-v1.p.rapidapi.com/news/v2/list?region=US&snippetCount=10"))
             .header("content-type", "text/plain")
             .header("x-rapidapi-key", "024a0ea4ccmsh5d44517eb45e8c2p124b12jsn54dea574ba43")
             .header("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com")
-            .method("POST", HttpRequest.BodyPublishers.ofString("Pass in the value of uuids field returned right in this endpoint to load the next page, or leave empty to load first page"))
+            .method(
+                "POST",
+                HttpRequest.BodyPublishers.ofString(
+                    "Pass in the value of uuids field returned right in this endpoint to load the next page, or leave empty to load first page"))
             .build();
-    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response =
+        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     return response.body();
   }
 }
