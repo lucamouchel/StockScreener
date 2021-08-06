@@ -1,5 +1,5 @@
 # StockViewer Application
-## Monitor investments, portfolio or simply view stocks information in real time or in the past.
+## Monitor investments, portfolio or simply view stocks information from american markets in real time or in the past.
 
 ### Features
 - Home Page:
