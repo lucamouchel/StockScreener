@@ -98,15 +98,16 @@ public class MainPageController implements Initializable {
       JSONArray arr = obj.getJSONArray("stream");
       for (int i = 0; i < arr.length(); i++) {
         JSONObject content = arr.getJSONObject(i).getJSONObject("content");
+        String title = content.getString("title");
         String url;
         try {
           url = content.getJSONObject("clickThroughUrl").getString("url");
         } catch (JSONException jsonException) {
-          url = "https://www.google.com/search?q=" + input.getText().replaceAll(" ", "+");
+          url = "https://www.google.com/search?q=" + title.replaceAll(" ", "+");
         }
         NewsInfo newsInfo =
             new NewsInfo(
-                content.getString("title"), content.getString("pubDate").substring(0, 10), url);
+               title, content.getString("pubDate").substring(0, 10), url);
         newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
       }
     } catch (IOException | InterruptedException exception) {
