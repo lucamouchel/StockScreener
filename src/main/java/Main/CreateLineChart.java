@@ -45,10 +45,10 @@ public class CreateLineChart {
     yAxis.setLabel(IndividualStock.chartCurrency);
 
     AreaChart<String, Number> areaChart = new AreaChart<>(xAxis, yAxis);
-    areaChart.setPrefHeight(383);
+    areaChart.setPrefHeight(400);
     areaChart.setPrefWidth(494);
-    areaChart.setLayoutX(697);
-    areaChart.setLayoutY(235);
+    areaChart.setLayoutX(620);
+    areaChart.setLayoutY(250);
     areaChart.setTitle("Stock Monitoring - " + symbol);
 
     assert ranges.containsKey(rangeSelected);
