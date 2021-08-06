@@ -57,44 +57,11 @@ public class MainPageController implements Initializable {
       currentValueBox,
       profitsBox;
 
-  @FXML
-  public void addInvestment() throws IOException {
-    String symbol = symbolInvested.getText(), shares = sharesBought.getText();
-    SingleInvestment newInvestment = new SingleInvestment(symbol, shares);
-    addInvestmentDataToVboxes(newInvestment);
-    investmentOutputStream.write(
-        JavaTools.mergeStrings(symbol, "|", shares, System.getProperty("line.separator"))
-            .getBytes());
-    symbolInvested.clear();
-    sharesBought.clear();
-  }
-
-  @FXML
-  public void setNodesVisible() {
-    addStockToPFolio.setVisible(true);
-    portfolioStock.setVisible(true);
-    TextFields.bindAutoCompletion(portfolioStock, supportedStocks);
-  }
-
-  private void addInvestmentDataToVboxes(SingleInvestment investment) throws IOException {
-    symbolBox.getChildren().addAll(new Text(investment.getSymbol()), new Separator());
-    currentStockValueBox
-        .getChildren()
-        .addAll(new Text(investment.getCurrentStockValue()), new Separator());
-    sharesBoughtBox.getChildren().addAll(new Text(investment.getSharesBought()), new Separator());
-    valueAtPurchase
-        .getChildren()
-        .addAll(new Text(investment.getValueAtPurchase()), new Separator());
-    currentValueBox.getChildren().addAll(new Text(investment.getCurrentValue()), new Separator());
-    profitsBox.getChildren().addAll(new Text(investment.getGains()), new Separator());
-  }
-
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     try {
       System.setProperty("webdriver.chrome.driver", "C:\\Program Files (x86)\\chromedriver.exe");
       TrendingStocks.createTrendingStocksBox(stockList);
-
       supportedStocks =
           JavaTools.concatLists(
               WebLinks.getNASDAQTickers(), WebLinks.getAMEXTickers(), WebLinks.getNYSETickers());
@@ -309,5 +276,37 @@ public class MainPageController implements Initializable {
           }
         };
     new Thread(runnable).start();
+  }
+
+  @FXML
+  public void addInvestment() throws IOException {
+    String symbol = symbolInvested.getText(), shares = sharesBought.getText();
+    SingleInvestment newInvestment = new SingleInvestment(symbol, shares);
+    addInvestmentDataToVboxes(newInvestment);
+    investmentOutputStream.write(
+        JavaTools.mergeStrings(symbol, "|", shares, System.getProperty("line.separator"))
+            .getBytes());
+    symbolInvested.clear();
+    sharesBought.clear();
+  }
+
+  @FXML
+  public void setNodesVisible() {
+    addStockToPFolio.setVisible(true);
+    portfolioStock.setVisible(true);
+    TextFields.bindAutoCompletion(portfolioStock, supportedStocks);
+  }
+
+  private void addInvestmentDataToVboxes(SingleInvestment investment) throws IOException {
+    symbolBox.getChildren().addAll(new Text(investment.getSymbol()), new Separator());
+    currentStockValueBox
+        .getChildren()
+        .addAll(new Text(investment.getCurrentStockValue()), new Separator());
+    sharesBoughtBox.getChildren().addAll(new Text(investment.getSharesBought()), new Separator());
+    valueAtPurchase
+        .getChildren()
+        .addAll(new Text(investment.getValueAtPurchase()), new Separator());
+    currentValueBox.getChildren().addAll(new Text(investment.getCurrentValue()), new Separator());
+    profitsBox.getChildren().addAll(new Text(investment.getGains()), new Separator());
   }
 }

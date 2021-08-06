@@ -6,7 +6,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
@@ -62,6 +61,6 @@ public class SingleInvestment {
   }
 
   private String formattedValue(double value) {
-    return NumberFormat.getNumberInstance(Locale.US).format(value); // String.format("%,f", Double.parseDouble(String.format("%.2f", value)));
+    return NumberFormat.getNumberInstance(Locale.US).format(value);
   }
 }

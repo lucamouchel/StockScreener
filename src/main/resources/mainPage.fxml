@@ -34,9 +34,9 @@
                 <Font name="System Bold" size="48.0" />
             </font>
         </Text>
-      <ScrollPane fx:id="scrollPane" layoutX="331.0" layoutY="273.0" prefHeight="510.0" prefWidth="772.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: transparent;">
+      <ScrollPane fx:id="scrollPane" layoutX="331.0" layoutY="273.0" prefHeight="510.0" prefWidth="757.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: transparent;">
          <content>
-            <VBox fx:id="newsBox" prefHeight="489.0" prefWidth="759.0" />
+            <VBox fx:id="newsBox" prefHeight="490.0" prefWidth="742.0" />
          </content>
       </ScrollPane>
       <Button fx:id="addStockToPFolio" layoutX="1452.0" layoutY="84.0" mnemonicParsing="false" onAction="#addStock" style="-fx-background-color: pink;" text="+" visible="false" />
@@ -106,7 +106,7 @@
       <VBox fx:id="symbolBox" alignment="TOP_CENTER" layoutX="1085.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
       <VBox fx:id="currentStockValueBox" alignment="TOP_CENTER" layoutX="1148.0" layoutY="335.0" prefHeight="200.0" prefWidth="88.0" style="-fx-spacing: 10;" />
       <VBox fx:id="valueAtPurchase" alignment="TOP_CENTER" layoutX="1328.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="currentValueBox" alignment="TOP_CENTER" layoutX="1387.0" layoutY="335.0" prefHeight="200.0" prefWidth="77.0" style="-fx-spacing: 10;" />
+      <VBox fx:id="currentValueBox" alignment="TOP_CENTER" layoutX="1395.0" layoutY="335.0" prefHeight="200.0" prefWidth="77.0" style="-fx-spacing: 10;" />
       <VBox fx:id="profitsBox" alignment="TOP_CENTER" layoutX="1463.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
       <VBox fx:id="sharesBoughtBox" alignment="TOP_CENTER" layoutX="1231.0" layoutY="335.0" prefHeight="200.0" prefWidth="106.0" style="-fx-spacing: 10;" />
       <Separator layoutX="1145.0" layoutY="290.0" orientation="VERTICAL" prefHeight="502.0" prefWidth="6.0" style="-fx-background-color: grey;" />
