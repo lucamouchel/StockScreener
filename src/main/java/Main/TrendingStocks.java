@@ -25,6 +25,7 @@ public final class TrendingStocks {
     for (int i = 0; i < result.length(); i++) {
       JSONArray quotes = result.getJSONObject(i).getJSONArray("quotes");
       for (int j = 0; j < quotes.length(); j++) {
+        //individuating all the quotes from the array
         JSONObject quote = quotes.getJSONObject(j);
         double marketChange = quote.getDouble("regularMarketChange");
         FontIcon arrow = new FontIcon(marketChange < 0 ? "fa-long-arrow-down" : "fa-long-arrow-up");
@@ -34,6 +35,7 @@ public final class TrendingStocks {
             .getChildren()
             .addAll(
                 new HBox(
+                        //adding essentiel data - symbol, market price, percentages and shift from previous day
                     20,
                     textWithColor(quote.getString("symbol"), Color.BLACK),
                     textWithColor(String.format("%.2f", quote.getDouble("regularMarketPrice")), color),
@@ -46,6 +48,7 @@ public final class TrendingStocks {
   }
 
   private static String trendingStocksInJson() throws IOException, InterruptedException {
+    //creates the request to the api to extract the data from
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(

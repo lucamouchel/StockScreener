@@ -30,21 +30,15 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {
-  private final File porfolioFile = new File("src/main/resources/portfolioStocks.txt"),
-      investmentFile = new File("src/main/resources/investments.txt");
+  private final File dataFile = new File("src/main/resources/data.txt");
   @FXML AnchorPane root, pane;
   @FXML
   private TextField input, portfolioStock, cryptoName, otherStock, sharesBought, symbolInvested;
   @FXML private ChoiceBox<String> rangeSelector;
-  private AreaChart<String, Number> areaChart;
   @FXML private ScrollPane scrollPane;
   @FXML private Button addStockToPFolio;
   @FXML private MenuButton myPortfolio;
   @FXML private Label stockPresentLabel;
-  private FileOutputStream portfolioOutputStream, investmentOutputStream;
-  private BufferedReader portfolioReader, investmentReader;
-  private List<String> supportedStocks;
-  private WebDriver driver;
   @FXML private Text news;
   @FXML
   private VBox stockList,
@@ -56,6 +50,10 @@ public class MainPageController implements Initializable {
       valueAtPurchase,
       currentValueBox,
       profitsBox;
+  private AreaChart<String, Number> areaChart;
+  private FileOutputStream dataOutputStream;
+  private List<String> supportedStocks;
+  private WebDriver driver;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -66,31 +64,29 @@ public class MainPageController implements Initializable {
           JavaTools.concatLists(
               WebLinks.getNASDAQTickers(), WebLinks.getAMEXTickers(), WebLinks.getNYSETickers());
       TextFields.bindAutoCompletion(input, supportedStocks);
-      portfolioOutputStream = new FileOutputStream(porfolioFile, true);
-      portfolioReader = new BufferedReader(new FileReader(porfolioFile));
+      dataOutputStream = new FileOutputStream(dataFile, true);
+      BufferedReader dataReader = new BufferedReader(new FileReader(dataFile));
       String line;
-      while ((line = portfolioReader.readLine()) != null) {
-        MenuItem item = new MenuItem(line);
-        String finalLine = line;
-        item.setOnAction(
-            e -> {
-              try {
-                addSingleStockToPage(finalLine);
-              } catch (IOException | InterruptedException exception) {
-                exception.printStackTrace();
-              }
-            });
-        myPortfolio.getItems().add(item);
-      }
-
-      investmentOutputStream = new FileOutputStream(investmentFile, true);
-      investmentReader = new BufferedReader(new FileReader(investmentFile));
-      String investLine;
-      // in the .txt file the formatting will be in the form symbol|100x301 - the second part being
-      // the number of shares by the value of each share
-      while ((investLine = investmentReader.readLine()) != null) {
-        String[] investment = investLine.split("\\|");
-        addInvestmentDataToVboxes(new SingleInvestment(investment[0], investment[1]));
+      // in the .txt file the formatting will be in the form symbol|100x301 for investments (the
+      // second part being the number of shares by the value of each share) or simply SYMBOL for a
+      // stock in the portfolio
+      while ((line = dataReader.readLine()) != null) {
+        if (line.contains("|")) {
+          String[] investment = line.split("\\|");
+          addInvestmentDataToVboxes(new SingleInvestment(investment[0], investment[1]));
+        } else {
+          MenuItem item = new MenuItem(line);
+          String finalLine = line;
+          item.setOnAction(
+              e -> {
+                try {
+                  addSingleStockToPage(finalLine);
+                } catch (IOException | InterruptedException exception) {
+                  exception.printStackTrace();
+                }
+              });
+          myPortfolio.getItems().add(item);
+        }
       }
 
       String json = WebLinks.JSONNewsInfo();
@@ -105,9 +101,7 @@ public class MainPageController implements Initializable {
         } catch (JSONException jsonException) {
           url = "https://www.google.com/search?q=" + title.replaceAll(" ", "+");
         }
-        NewsInfo newsInfo =
-            new NewsInfo(
-               title, content.getString("pubDate").substring(0, 10), url);
+        NewsInfo newsInfo = new NewsInfo(title, content.getString("pubDate").substring(0, 10), url);
         newsBox.getChildren().addAll(newsInfo.createNewsVbox(), new Separator());
       }
     } catch (IOException | InterruptedException exception) {
@@ -168,7 +162,7 @@ public class MainPageController implements Initializable {
       stockPresentLabel.setText("This stock is already in your portfolio");
       stockPresentLabel.setTextFill(Color.RED);
     }
-    portfolioOutputStream.write(
+    dataOutputStream.write(
         JavaTools.mergeStrings(detectedSymbol, System.getProperty("line.separator")).getBytes());
   }
 
@@ -232,59 +226,60 @@ public class MainPageController implements Initializable {
   }
 
   @FXML
-  public void searchWebForStock() throws InterruptedException {
+  public void searchWebForStock() {
     CharSequence chars = otherStock.getCharacters();
     driver = new ChromeDriver();
     driver.get("https://finance.yahoo.com/");
-    Runnable runnable =
-        () -> {
-          try {
-            driver.findElement(By.name("agree")).click();
-            Thread.sleep(1000);
-            WebElement searchStock =
-                driver.findElement(
-                    By.xpath("//input[@placeholder='Search for news, symbols or companies']"));
-            searchStock.click();
-            searchStock.sendKeys(chars);
-            Thread.sleep(3000);
-            for (WebElement elem : searchStock.findElements(By.xpath("//li[@role='option']"))) {
-              if (elem.getText().contains(chars)) {
-                elem.click();
-                break;
+    new Thread(
+            () -> {
+              try {
+                driver.findElement(By.name("agree")).click();
+                Thread.sleep(1000);
+                WebElement searchStock =
+                    driver.findElement(
+                        By.xpath("//input[@placeholder='Search for news, symbols or companies']"));
+                searchStock.click();
+                searchStock.sendKeys(chars);
+                Thread.sleep(3000);
+                for (WebElement elem : searchStock.findElements(By.xpath("//li[@role='option']"))) {
+                  if (elem.getText().contains(chars)) {
+                    elem.click();
+                    break;
+                  }
+                }
+              } catch (InterruptedException e) {
+                e.printStackTrace();
               }
-            }
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-        };
-    new Thread(runnable).start();
+            })
+        .start();
   }
 
   @FXML
   public void openCrypto() {
     driver = new ChromeDriver();
-    Runnable runnable =
-        () -> {
-          driver.get(
-              String.format("https://coinmarketcap.com/currencies/%s/", cryptoName.getText()));
-          try {
-            new ArrayList<>(By.xpath("//a[@href='/']").findElements(driver))
-                .stream()
-                    .filter(elem -> elem.getText().contains("Homepage"))
-                    .findAny()
-                    .ifPresent(WebElement::click);
-          } catch (Exception ignored) {
-          }
-        };
-    new Thread(runnable).start();
+    new Thread(
+            () -> {
+              driver.get(
+                  String.format("https://coinmarketcap.com/currencies/%s/", cryptoName.getText()));
+              try {
+                new ArrayList<>(By.xpath("//a[@href='/']").findElements(driver))
+                    .stream()
+                        .filter(elem -> elem.getText().contains("Homepage"))
+                        .findAny()
+                        .ifPresent(WebElement::click);
+              } catch (Exception ignored) {
+              }
+            })
+        .start();
   }
 
   @FXML
   public void addInvestment() throws IOException {
     String symbol = symbolInvested.getText(), shares = sharesBought.getText();
+    if (!shares.contains("x") || shares.split("x").length > 2) sharesBought.setText("Wrong Format");
     SingleInvestment newInvestment = new SingleInvestment(symbol, shares);
     addInvestmentDataToVboxes(newInvestment);
-    investmentOutputStream.write(
+    dataOutputStream.write(
         JavaTools.mergeStrings(symbol, "|", shares, System.getProperty("line.separator"))
             .getBytes());
     symbolInvested.clear();

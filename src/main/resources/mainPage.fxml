@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -53,7 +52,7 @@
       </ScrollPane>
       <Button contentDisplay="CENTER" graphicTextGap="10.0" layoutX="1325.0" layoutY="34.0" mnemonicParsing="false" onAction="#setNodesVisible" prefHeight="38.0" prefWidth="150.0" style="-fx-background-color: pink;" text="Edit Portfolio" />
       <TextField fx:id="portfolioStock" layoutX="1326.0" layoutY="84.0" onAction="#addStock" prefHeight="26.0" prefWidth="121.0" promptText="Symbol/Company" visible="false" />
-      <Label fx:id="stockPresentLabel" layoutX="784.0" layoutY="198.0" prefHeight="18.0" prefWidth="202.0" />
+      <Label fx:id="stockPresentLabel" layoutX="1299.0" layoutY="177.0" prefHeight="18.0" prefWidth="202.0" />
       <TextField fx:id="cryptoName" layoutX="155.0" layoutY="203.0" onAction="#openCrypto" prefHeight="26.0" prefWidth="114.0" promptText="Enter crypto name" visible="false" />
       <Button layoutX="282.0" layoutY="154.0" mnemonicParsing="false" onAction="#searchForOtherStocks" prefHeight="32.0" prefWidth="195.0" style="-fx-background-color: grey; -fx-label-padding: 3; -fx-border-radius: 20 20 20 20;" text="Search for non-american stocks" />
       <TextField fx:id="otherStock" layoutX="282.0" layoutY="203.0" onAction="#searchWebForStock" prefHeight="26.0" prefWidth="195.0" promptText="Enter Symbol or company name" visible="false" />
@@ -99,17 +98,12 @@
          <font>
             <Font name="System Bold" size="11.0" />
          </font></Text>
-      <Separator layoutX="1224.0" layoutY="289.0" orientation="VERTICAL" prefHeight="502.0" prefWidth="6.0" style="-fx-background-color: grey;" />
-      <Separator layoutX="1330.0" layoutY="289.0" orientation="VERTICAL" prefHeight="502.0" prefWidth="6.0" style="-fx-background-color: grey;" />
-      <Separator layoutX="1392.0" layoutY="290.0" orientation="VERTICAL" prefHeight="502.0" prefWidth="6.0" style="-fx-background-color: grey;" />
-      <Separator layoutX="1466.0" layoutY="289.0" orientation="VERTICAL" prefHeight="502.0" prefWidth="6.0" style="-fx-background-color: grey;" />
       <VBox fx:id="symbolBox" alignment="TOP_CENTER" layoutX="1085.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="currentStockValueBox" alignment="TOP_CENTER" layoutX="1148.0" layoutY="335.0" prefHeight="200.0" prefWidth="88.0" style="-fx-spacing: 10;" />
+      <VBox fx:id="currentStockValueBox" alignment="TOP_CENTER" layoutX="1153.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
       <VBox fx:id="valueAtPurchase" alignment="TOP_CENTER" layoutX="1328.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
       <VBox fx:id="currentValueBox" alignment="TOP_CENTER" layoutX="1395.0" layoutY="335.0" prefHeight="200.0" prefWidth="77.0" style="-fx-spacing: 10;" />
       <VBox fx:id="profitsBox" alignment="TOP_CENTER" layoutX="1463.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
       <VBox fx:id="sharesBoughtBox" alignment="TOP_CENTER" layoutX="1231.0" layoutY="335.0" prefHeight="200.0" prefWidth="106.0" style="-fx-spacing: 10;" />
-      <Separator layoutX="1145.0" layoutY="290.0" orientation="VERTICAL" prefHeight="502.0" prefWidth="6.0" style="-fx-background-color: grey;" />
       <AnchorPane fx:id="pane" layoutX="343.0" layoutY="276.0" prefHeight="358.0" prefWidth="283.0" style="-fx-background-color: #c3bbbb; -fx-background-radius: 20 20 20 20;" visible="false">
          <children>
             <VBox fx:id="singleStockBox" layoutX="14.0" layoutY="14.0" prefHeight="328.0" prefWidth="265.0" />

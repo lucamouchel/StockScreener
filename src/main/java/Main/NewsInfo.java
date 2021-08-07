@@ -5,11 +5,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.awt.*;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 public final class NewsInfo {
   private final String title, date, websiteUrl;
@@ -28,14 +24,7 @@ public final class NewsInfo {
     date.setStyle("-fx-font-size: 10");
 
     Hyperlink website = new Hyperlink(websiteUrl);
-    website.setOnAction(
-        event -> {
-          try {
-            Desktop.getDesktop().browse(new URL(websiteUrl).toURI());
-          } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-          }
-        });
+    website.setOnAction(event -> new ChromeDriver().get(websiteUrl));
     newsBox.getChildren().add(new HBox(15, new VBox(title, date, website)));
     return newsBox;
   }
