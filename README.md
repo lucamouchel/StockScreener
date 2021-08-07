@@ -41,6 +41,8 @@ I used FXML and scene builder to create most of the GUI for this project.
 ### Run the app
 The app uses JavaFX and FXML so the following VM options have to be added into the run configurations (in intellij) : 
 --module-path **path.to.javafx.LIB** --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base --add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED
+Furthermore, you need to download chromedriver at https://chromedriver.chromium.org/downloads : select a version and download the one corresponding to the OS. 
+Place the .exe driver such that it will have the following path __C:\\Program Files (x86)\\chromedriver.exe__ otherwise selenium will not work.
 
 Annex:
 Example of 3 different investments (the first one consist of **36 shares bought at the price of 13.74**) and clicking on a stock in your portfolio
