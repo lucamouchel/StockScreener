@@ -3,7 +3,7 @@
 
 ### Features
 - Home Page:
-  When first running the app, three main sections can be distinguished on the hom, these consist of:
+  When first running the app, three main sections can be distinguished, these consist of:
   - Trending stocks with basic information such as current value or difference from previous day close 
   - News in american financial markets with links to the articles on the Web.
   - Your own investments in the stock market you have to manually add.
@@ -23,7 +23,7 @@
 
 
 ### Your investments and portfolio.
-- To add an investment on the app, a user can simply enter the symbol or company name and the number of shares bought at X price (ie **numSharesxValue**):
+- To add an investment on the app, a user can simply enter the symbol or company name and the number of shares bought at X price (you have to write the number of shares *x* the value at the time of purchase ie 20 shares at 10.56$ would be written 20x10.56):
   - When adding an investment, by using the HMTLUnit library, the program will access a google web page searching for the stock chosen and will pick out a precise html element from the page source containing the current stock value. From there, simple calculations can be made from the numbers of shares bought at X price.
 - For the portfolio, you can click on add a stock and you can enter the company name or symbol and it will add it to the menu button.
   - When pressing on a stock in the portfolio, the news pannel is removed and replaced by informations on the clicked stock.
@@ -31,11 +31,16 @@
   - I will maybe convert the .txt files to .json in the nearby future.
  
 ### How most of it works
-For this project, I used various libraries and APIs. The most frequent API I used is Yahoo Finance which provides in-depth information on most of american stocks. In fact the supported stocks for the auto-completion field come from the NYSE, NASDAQ and AMEX exchanges. However, having used free plans which have limited API calls, I also used the Alpha Vantage API. Regarding the libraries, I mostly used: JSON, HTMLUnit and Selenium. JSON was used to filter the data incoming from the APIs and Html unit to find certain html elements in the webpage when adding an investment. I used selenium to automate the search for non-american stocks or cryptocurrencies. In fact, a user just needs to type a european stock for example and it will open a yahoo finance web page that will search for the given stock automatically and open it.
+For this project, I used various libraries and APIs. The most frequent API I used is Yahoo Finance which provides in-depth information on most of american stocks. In fact the supported stocks for the auto-completion field come from the NYSE, NASDAQ and AMEX exchanges. However, having used free plans which have limited API calls, I also used the Alpha Vantage API. Regarding the libraries, I mostly used: JSON, HTMLUnit, Selenium and JavaFx of course. JSON was used to filter the data incoming from the APIs and Html unit to find certain html elements in the webpage when adding an investment. I used selenium to automate the search for non-american stocks or cryptocurrencies. In fact, a user just needs to type a european stock for example and it will open a yahoo finance web page that will search for the given stock automatically and open it.
+  - Selenium will complete the textfield on the webpage with the symbol entered and from the suggested quotes, will select the one most similar to the symbol entered and click on it.
+  - The same principle is used for cryptocurrencies. If a wrong crypto is entered, selenium will lead you back to the homepage of the website.
+
+### GUI
+I used FXML and scene builder to create most of the GUI for this project.
  
 ### Run the app
 The app uses JavaFX and FXML so the following VM options have to be added into the run configurations (in intellij) : 
-__--module-path **path to javafx LIB** --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base --add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED__
+--module-path **path.to.javafx.LIB** --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base --add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED
 
 Annex:
 Example of 3 different investments (the first one consist of **36 shares bought at the price of 13.74**) and clicking on a stock in your portfolio
