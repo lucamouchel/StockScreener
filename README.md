@@ -1,4 +1,4 @@
-# StockViewer Application
+# StockScreener Application
 ## Monitor investments, portfolio or simply view stocks information from american markets in real time or in the past.
 
 ### Features
