@@ -1,7 +1,6 @@
 package Main;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -69,28 +68,19 @@ public final class IndividualStock {
   }
 
   public String previousDayClose() {
-    try {
-      return "Previous close: " + json.getDouble("regularMarketPreviousClose") + " " + currency;
-    } catch (JSONException e) {
-      return "NA";
-    }
+    return returnValue("regularMarketPreviousClose");
   }
 
   public String getLastDatedStockValue() {
-    try {
-      double lastPriced = json.getDouble("regularMarketPrice");
-      return String.format("%.2f", lastPriced) + " " + currency;
-    } catch (JSONException e) {
-      return "NA";
-    }
+    return returnValue("regularMarketClose");
   }
 
   public String shiftPercentage() {
-    return String.format("%.2f", json.getDouble("regularMarketChangePercent"));
+    return returnValue("regularMarketChangePercent");
   }
 
   public String differenceFromPreviousDay() {
-    return String.format("%.2f", json.getDouble("regularMarketChange"));
+    return returnValue("regularMarketChange");
   }
 
   public String getName() {
@@ -125,4 +115,11 @@ public final class IndividualStock {
         "Share Volume: %s %s",
         String.format("%,.2f", json.getDouble("regularMarketVolume")), currency);
   }
+
+  private String returnValue(String value) {
+    return json.isNull(value)
+            ? String.format("%.2f", json.getDouble(value)) + " " + currency
+            : "N/A";
+  }
+
 }

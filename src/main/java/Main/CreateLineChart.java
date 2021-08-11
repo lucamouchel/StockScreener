@@ -104,7 +104,6 @@ public class CreateLineChart {
   private static class HoveredThresholdNode extends StackPane {
     HoveredThresholdNode(double priorValue, double value) {
       setPrefSize(10, 10);
-
       final Label label = createDataThresholdLabel(priorValue, value);
 
       setOnMouseEntered(

@@ -3,6 +3,7 @@ package Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.control.*;
@@ -39,7 +40,7 @@ public class MainPageController implements Initializable {
   @FXML private Button addStockToPFolio;
   @FXML private MenuButton myPortfolio;
   @FXML private Label stockPresentLabel;
-  @FXML private Text news;
+  @FXML private Text news, totalGains, totalCurrentValue, totalSpent;
   @FXML
   private VBox stockList,
       singleStockBox,
@@ -70,10 +71,16 @@ public class MainPageController implements Initializable {
       // in the .txt file the formatting will be in the form symbol|100x301 for investments (the
       // second part being the number of shares by the value of each share) or simply SYMBOL for a
       // stock in the portfolio
+      double spent = 0, currentValue = 0, gains = 0;
       while ((line = dataReader.readLine()) != null) {
         if (line.contains("|")) {
           String[] investment = line.split("\\|");
-          addInvestmentDataToVboxes(new SingleInvestment(investment[0], investment[1]));
+          SingleInvestment correspondingInvestment =
+              new SingleInvestment(investment[0], investment[1]);
+          addInvestmentDataToVboxes(correspondingInvestment);
+          spent += correspondingInvestment.getValueAtPurchase();
+          currentValue += correspondingInvestment.getCurrentValue();
+          gains += correspondingInvestment.getGains();
         } else {
           MenuItem item = new MenuItem(line);
           String finalLine = line;
@@ -88,6 +95,9 @@ public class MainPageController implements Initializable {
           myPortfolio.getItems().add(item);
         }
       }
+      totalCurrentValue.setText(JavaTools.formattedValue(currentValue));
+      totalSpent.setText(JavaTools.formattedValue(spent));
+      totalGains.setText(JavaTools.formattedValue(gains));
 
       String json = WebLinks.JSONNewsInfo();
       JSONObject obj = new JSONObject(json).getJSONObject("data").getJSONObject("main");
@@ -126,7 +136,7 @@ public class MainPageController implements Initializable {
   }
 
   @FXML
-  public void addStock() throws IOException {
+  public void addStockToPortfolio() throws IOException {
     String detectedSymbol;
     String userInput = portfolioStock.getText();
     MenuItem stock;
@@ -278,7 +288,18 @@ public class MainPageController implements Initializable {
     String symbol = symbolInvested.getText(), shares = sharesBought.getText();
     if (!shares.contains("x") || shares.split("x").length > 2) sharesBought.setText("Wrong Format");
     SingleInvestment newInvestment = new SingleInvestment(symbol, shares);
+    double currentTotalSpent = Double.parseDouble(totalSpent.getText().replaceAll(",", "")),
+        currentTotalValue = Double.parseDouble(totalCurrentValue.getText().replaceAll(",", "")),
+        currentTotalGains = Double.parseDouble(totalGains.getText().replaceAll(",", ""));
+
     addInvestmentDataToVboxes(newInvestment);
+
+    totalCurrentValue.setText(
+        JavaTools.formattedValue(currentTotalValue + newInvestment.getCurrentValue()));
+    totalGains.setText(JavaTools.formattedValue(currentTotalGains + newInvestment.getGains()));
+    totalSpent.setText(
+        JavaTools.formattedValue(currentTotalSpent + newInvestment.getValueAtPurchase()));
+
     dataOutputStream.write(
         JavaTools.mergeStrings(symbol, "|", shares, System.getProperty("line.separator"))
             .getBytes());
@@ -301,8 +322,42 @@ public class MainPageController implements Initializable {
     sharesBoughtBox.getChildren().addAll(new Text(investment.getSharesBought()), new Separator());
     valueAtPurchase
         .getChildren()
-        .addAll(new Text(investment.getValueAtPurchase()), new Separator());
-    currentValueBox.getChildren().addAll(new Text(investment.getCurrentValue()), new Separator());
-    profitsBox.getChildren().addAll(new Text(investment.getGains()), new Separator());
+        .addAll(
+            new Text(JavaTools.formattedValue(investment.getValueAtPurchase())), new Separator());
+    currentValueBox
+        .getChildren()
+        .addAll(new Text(JavaTools.formattedValue(investment.getCurrentValue())), new Separator());
+    profitsBox
+        .getChildren()
+        .addAll(new Text(JavaTools.formattedValue(investment.getGains())), new Separator());
+  }
+
+  @FXML
+  public void refreshInvestments() {
+    List<Node> symbols = symbolBox.getChildren();
+    for (Node symbol : symbols) {
+      Node sharesBought = sharesBoughtBox.getChildren().get(symbols.indexOf(symbol));
+      if (symbol instanceof Text && sharesBought instanceof Text) {
+        SingleInvestment refreshed =
+            new SingleInvestment(((Text) symbol).getText(), ((Text) sharesBought).getText());
+        try {
+          currentStockValueBox
+              .getChildren()
+              .set(symbols.indexOf(symbol), new Text(refreshed.getCurrentStockValue()));
+          double currentValue = refreshed.getCurrentValue();
+          currentValueBox
+              .getChildren()
+              .set(symbols.indexOf(symbol), new Text(JavaTools.formattedValue(currentValue)));
+          profitsBox
+              .getChildren()
+              .set(
+                  symbols.indexOf(symbol),
+                  new Text(
+                      JavaTools.formattedValue(currentValue - refreshed.getValueAtPurchase())));
+        } catch (IOException exception) {
+          exception.printStackTrace();
+        }
+      }
+    }
   }
 }
