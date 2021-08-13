@@ -1,6 +1,9 @@
 package utils;
 
 import Main.IndividualStock;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -34,5 +37,17 @@ public class JFXTools {
     Text textWithColor = new Text(text);
     textWithColor.setFill(Paint.valueOf(String.valueOf(color)));
     return textWithColor;
+  }
+
+  public static void verifyPortfolioContainsStock(
+      ObservableList<MenuItem> myPortfolio, MenuItem toAdd, Label stockIsPresent) {
+    if (myPortfolio.stream().noneMatch(menuItem -> menuItem.getText().equals(toAdd.getText()))
+        || myPortfolio.isEmpty()) {
+      myPortfolio.add(toAdd);
+      stockIsPresent.setText("");
+    } else {
+      stockIsPresent.setText("This stock is already in your portfolio");
+      stockIsPresent.setTextFill(Color.RED);
+    }
   }
 }

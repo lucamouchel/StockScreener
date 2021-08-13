@@ -10,23 +10,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import utils.JFXTools;
 import utils.JavaTools;
+import utils.WebTools;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -131,47 +128,25 @@ public class MainPageController implements Initializable {
     addSingleStockToPage(detectedSymbol);
   }
 
-  private void addHbox(String info) {
-    singleStockBox.getChildren().addAll(new HBox(new Text(info)), new Separator());
-  }
-
   @FXML
   public void addStockToPortfolio() throws IOException {
     String detectedSymbol;
     String userInput = portfolioStock.getText();
     MenuItem stock;
-    if (portfolioStock.getText().contains("|")) {
-      detectedSymbol = userInput.substring(userInput.indexOf("|") + 1).replace(" ", "");
-      stock = new MenuItem(detectedSymbol);
-      stock.setOnAction(
-          e -> {
-            try {
-              setMenuItemAction(detectedSymbol);
-            } catch (IOException | InterruptedException exception) {
-              exception.printStackTrace();
-            }
-          });
-    } else {
-      detectedSymbol = userInput;
-      stock = new MenuItem(detectedSymbol);
-      stock.setOnAction(
-          e -> {
-            try {
-              setMenuItemAction(detectedSymbol);
-            } catch (IOException | InterruptedException exception) {
-              exception.printStackTrace();
-            }
-          });
-    }
-    if (myPortfolio.getItems().stream()
-            .noneMatch(menuItem -> menuItem.getText().equals(stock.getText()))
-        || myPortfolio.getItems().isEmpty()) {
-      myPortfolio.getItems().add(stock);
-      stockPresentLabel.setText("");
-    } else {
-      stockPresentLabel.setText("This stock is already in your portfolio");
-      stockPresentLabel.setTextFill(Color.RED);
-    }
+    detectedSymbol =
+        portfolioStock.getText().contains("|")
+            ? userInput.substring(userInput.indexOf("|") + 1).replace(" ", "")
+            : userInput;
+    stock = new MenuItem(detectedSymbol);
+    stock.setOnAction(
+        e -> {
+          try {
+            setMenuItemAction(detectedSymbol);
+          } catch (IOException | InterruptedException exception) {
+            exception.printStackTrace();
+          }
+        });
+    JFXTools.verifyPortfolioContainsStock(myPortfolio.getItems(), stock, stockPresentLabel);
     dataOutputStream.write(
         JavaTools.mergeStrings(detectedSymbol, System.getProperty("line.separator")).getBytes());
   }
@@ -192,14 +167,7 @@ public class MainPageController implements Initializable {
     IndividualStock singleStock = new IndividualStock(symbol);
     JFXTools.setUpVbox(
         singleStockBox, symbol, singleStock, Double.parseDouble(singleStock.shiftPercentage()));
-    addHbox(singleStock.getName());
-    addHbox(singleStock.getExchange());
-    addHbox(singleStock.getFiftyTwoWeekLow());
-    addHbox(singleStock.getFiftyTwoWeekHigh());
-    addHbox(singleStock.getMarketDayRange());
-    addHbox(singleStock.previousDayClose());
-    addHbox(singleStock.getMarketCap());
-    addHbox(singleStock.getShareVolume());
+    new LinkedList<>(singleStock.dataList()).forEach(this::addHbox);
     areaChart = CreateLineChart.createChart(symbol, rangeSelector.getValue());
     root.getChildren().add(areaChart);
     rangeSelector.setOnAction(
@@ -212,6 +180,10 @@ public class MainPageController implements Initializable {
             exception.printStackTrace();
           }
         });
+  }
+
+  private void addHbox(String info) {
+    singleStockBox.getChildren().addAll(new HBox(new Text(info)), new Separator());
   }
 
   @FXML
@@ -237,56 +209,30 @@ public class MainPageController implements Initializable {
 
   @FXML
   public void searchWebForStock() {
-    CharSequence chars = otherStock.getCharacters();
-    driver = new ChromeDriver();
-    driver.get("https://finance.yahoo.com/");
-    new Thread(
-            () -> {
-              try {
-                driver.findElement(By.name("agree")).click();
-                Thread.sleep(1000);
-                WebElement searchStock =
-                    driver.findElement(
-                        By.xpath("//input[@placeholder='Search for news, symbols or companies']"));
-                searchStock.click();
-                searchStock.sendKeys(chars);
-                Thread.sleep(3000);
-                for (WebElement elem : searchStock.findElements(By.xpath("//li[@role='option']"))) {
-                  if (elem.getText().contains(chars)) {
-                    elem.click();
-                    break;
-                  }
-                }
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              }
-            })
-        .start();
+    WebTools.searchWebForStock(otherStock.getCharacters());
   }
 
   @FXML
   public void openCrypto() {
-    driver = new ChromeDriver();
-    new Thread(
-            () -> {
-              driver.get(
-                  String.format("https://coinmarketcap.com/currencies/%s/", cryptoName.getText()));
-              try {
-                new ArrayList<>(By.xpath("//a[@href='/']").findElements(driver))
-                    .stream()
-                        .filter(elem -> elem.getText().contains("Homepage"))
-                        .findAny()
-                        .ifPresent(WebElement::click);
-              } catch (Exception ignored) {
-              }
-            })
-        .start();
+    WebTools.openCryptoWebPage(cryptoName.getText());
   }
 
   @FXML
   public void addInvestment() throws IOException {
     String symbol = symbolInvested.getText(), shares = sharesBought.getText();
-    if (!shares.contains("x") || shares.split("x").length > 2) sharesBought.setText("Wrong Format");
+    try {
+      if (!shares.contains("x") || shares.split("x").length > 2) {
+        sharesBought.setText("Wrong Format");
+        return;
+      }
+      // parse the first element which is supposed to be an int, if it isnt, exception thrown, ie
+      // number format is incorrect
+      Integer.parseInt(shares.split("x")[0]);
+    } catch (NumberFormatException e) {
+      sharesBought.setText("Wrong Format");
+      return;
+    }
+    symbolInvested.setText("Loading...");
     SingleInvestment newInvestment = new SingleInvestment(symbol, shares);
     double currentTotalSpent = Double.parseDouble(totalSpent.getText().replaceAll(",", "")),
         currentTotalValue = Double.parseDouble(totalCurrentValue.getText().replaceAll(",", "")),
@@ -333,30 +279,26 @@ public class MainPageController implements Initializable {
   }
 
   @FXML
-  public void refreshInvestments() {
+  public void refreshInvestments() throws IOException {
     List<Node> symbols = symbolBox.getChildren();
     for (Node symbol : symbols) {
       Node sharesBought = sharesBoughtBox.getChildren().get(symbols.indexOf(symbol));
       if (symbol instanceof Text && sharesBought instanceof Text) {
         SingleInvestment refreshed =
             new SingleInvestment(((Text) symbol).getText(), ((Text) sharesBought).getText());
-        try {
-          currentStockValueBox
-              .getChildren()
-              .set(symbols.indexOf(symbol), new Text(refreshed.getCurrentStockValue()));
-          double currentValue = refreshed.getCurrentValue();
-          currentValueBox
-              .getChildren()
-              .set(symbols.indexOf(symbol), new Text(JavaTools.formattedValue(currentValue)));
-          profitsBox
-              .getChildren()
-              .set(
-                  symbols.indexOf(symbol),
-                  new Text(
-                      JavaTools.formattedValue(currentValue - refreshed.getValueAtPurchase())));
-        } catch (IOException exception) {
-          exception.printStackTrace();
-        }
+        String currentStockValue = refreshed.getCurrentStockValue();
+        currentStockValueBox
+            .getChildren()
+            .set(symbols.indexOf(symbol), new Text(currentStockValue));
+        double currentValue = refreshed.getCurrentValue();
+        currentValueBox
+            .getChildren()
+            .set(symbols.indexOf(symbol), new Text(JavaTools.formattedValue(currentValue)));
+        profitsBox
+            .getChildren()
+            .set(
+                symbols.indexOf(symbol),
+                new Text(JavaTools.formattedValue(currentValue - refreshed.getValueAtPurchase())));
       }
     }
   }

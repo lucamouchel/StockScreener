@@ -53,8 +53,8 @@ public class CreateLineChart {
 
     assert ranges.containsKey(rangeSelected);
     yAxis.setAutoRanging(false);
-    yAxis.setLowerBound(values.stream().mapToInt(Double::intValue).min().orElse(0) - 5);
-    yAxis.setUpperBound(values.stream().mapToInt(Double::intValue).max().orElse(0) + 5);
+    yAxis.setLowerBound(values.stream().mapToInt(Double::intValue).min().orElse(0) - 2);
+    yAxis.setUpperBound(values.stream().mapToInt(Double::intValue).max().orElse(0) + 3);
 
     switch (ranges.get(rangeSelected)) {
       case ONE_MONTH:

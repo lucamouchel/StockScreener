@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class SingleInvestment {
-  private final String GOOGLE_QUERY = "https://www.google.com/search?q=";
+  public static final String GOOGLE_QUERY = "https://www.google.com/search?q=";
   // shares bought at X price has to have the format 20x102 = 20 shares at 102 dollars or other
   // currency
   private final String symbol, sharesBought;

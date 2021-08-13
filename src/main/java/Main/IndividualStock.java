@@ -1,6 +1,9 @@
 package Main;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -68,19 +71,28 @@ public final class IndividualStock {
   }
 
   public String previousDayClose() {
-    return returnValue("regularMarketPreviousClose");
+    try {
+      return "Previous close: " + json.getDouble("regularMarketPreviousClose") + " " + currency;
+    } catch (JSONException e) {
+      return "NA";
+    }
   }
 
   public String getLastDatedStockValue() {
-    return returnValue("regularMarketClose");
+    try {
+      double lastPriced = json.getDouble("regularMarketPrice");
+      return String.format("%.2f", lastPriced) + " " + currency;
+    } catch (JSONException e) {
+      return "NA";
+    }
   }
 
   public String shiftPercentage() {
-    return returnValue("regularMarketChangePercent");
+    return String.format("%.2f", json.getDouble("regularMarketChangePercent"));
   }
 
   public String differenceFromPreviousDay() {
-    return returnValue("regularMarketChange");
+    return String.format("%.2f", json.getDouble("regularMarketChange"));
   }
 
   public String getName() {
@@ -116,10 +128,14 @@ public final class IndividualStock {
         String.format("%,.2f", json.getDouble("regularMarketVolume")), currency);
   }
 
-  private String returnValue(String value) {
-    return json.isNull(value)
-            ? String.format("%.2f", json.getDouble(value)) + " " + currency
-            : "N/A";
+  public ObservableList<String> dataList() {
+    return FXCollections.observableArrayList(
+        getName(),
+        getExchange(),
+        getFiftyTwoWeekLow(),
+        getFiftyTwoWeekHigh(),
+        getMarketDayRange(),
+        getMarketCap(),
+        getShareVolume());
   }
-
 }
