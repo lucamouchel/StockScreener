@@ -12,13 +12,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-public final class IndividualStock {
+public final class Stock {
   public static final ArrayList<String> dates = new ArrayList<>();
   public static String chartCurrency;
   private final JSONObject json;
   private final String currency;
 
-  public IndividualStock(String symbol) throws IOException, InterruptedException {
+  public Stock(String symbol) throws IOException, InterruptedException {
     this.json =
         new JSONObject(WebLinks.stockOptionsJSON(symbol))
             .getJSONObject("meta")

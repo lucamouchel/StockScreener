@@ -2,24 +2,25 @@ package Main;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import utils.JavaTools;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class SingleInvestment {
+public class Investment {
   public static final String GOOGLE_QUERY = "https://www.google.com/search?q=";
+  public static final String BING_QUERY = "https://www.bing.com/search?q=";
+
   // shares bought at X price has to have the format 20x102 = 20 shares at 102 dollars or other
   // currency
   private final String symbol, sharesBought;
   private String stockValue;
   private double currentValue, valueAtPurchase;
 
-  public SingleInvestment(String symbol, String sharesBought) {
+  public Investment(String symbol, String sharesBought) {
     this.symbol = symbol;
     this.sharesBought = sharesBought;
   }
@@ -33,12 +34,14 @@ public class SingleInvestment {
   }
 
   public String getCurrentStockValue() throws IOException {
+    //this turns off all warnings and exceptions from HtmlUnit
+    Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
     WebClient webClient = new WebClient(BrowserVersion.CHROME);
     webClient.getOptions().setJavaScriptEnabled(true);
     webClient.getOptions().setThrowExceptionOnScriptError(false);
-    HtmlPage page = webClient.getPage(GOOGLE_QUERY + String.format("%s+stocks", symbol));
+    HtmlPage page = webClient.getPage(BING_QUERY + String.format("%s+stocks", symbol));
     stockValue =
-        ((HtmlSpan) page.getByXPath("//span[@jsname='vWLAgc']").get(0))
+        ((HtmlElement) page.getByXPath("//div[@class='b_focusTextMedium']").get(0))
             .getTextContent()
             .replaceAll(",", ".");
     return stockValue;

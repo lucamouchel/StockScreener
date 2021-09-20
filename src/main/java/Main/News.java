@@ -7,10 +7,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public final class NewsInfo {
+public final class News {
   private final String title, date, websiteUrl;
 
-  public NewsInfo(String title, String date, String websiteUrl) {
+  public News(String title, String date, String websiteUrl) {
     this.title = title;
     this.date = date;
     this.websiteUrl = websiteUrl;

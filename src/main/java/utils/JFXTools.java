@@ -1,6 +1,6 @@
 package utils;
 
-import Main.IndividualStock;
+import Main.Stock;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -14,7 +14,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class JFXTools {
   public static void setUpVbox(
-      VBox stockToAdd, String stock, IndividualStock individualStock, double shiftPercentage) {
+          VBox stockToAdd, String stock, Stock individualStock, double shiftPercentage) {
     Color color = shiftPercentage < 0 ? Color.RED : Color.GREEN;
     FontIcon arrow =
         new FontIcon(color.equals(Color.RED) ? "fa-long-arrow-down" : "fa-long-arrow-up");

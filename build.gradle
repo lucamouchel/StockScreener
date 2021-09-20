@@ -20,17 +20,17 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
-    compile 'com.squareup.retrofit2:retrofit:2.9.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    compile 'org.kordamp.ikonli:ikonli-javafx:11.4.0'
-    compile 'org.kordamp.ikonli:ikonli-fontawesome-pack:11.4.0'
+    implementation 'org.kordamp.ikonli:ikonli-javafx:11.4.0'
+    implementation 'org.kordamp.ikonli:ikonli-fontawesome-pack:11.4.0'
 
-    compile 'net.sourceforge.htmlunit:htmlunit:2.49.1'
-    compile 'com.googlecode.json-simple:json-simple:1.1'
-    compile group: 'com.jfoenix', name: 'jfoenix', version: '9.0.9'
-    compile group: 'org.json', name: 'json', version: '20180813'
-    compile group: 'org.controlsfx', name: 'controlsfx', version: '11.1.0'
+    implementation 'net.sourceforge.htmlunit:htmlunit:2.49.1'
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+    implementation group: 'com.jfoenix', name: 'jfoenix', version: '9.0.9'
+    implementation group: 'org.json', name: 'json', version: '20180813'
+    implementation group: 'org.controlsfx', name: 'controlsfx', version: '11.1.0'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 }

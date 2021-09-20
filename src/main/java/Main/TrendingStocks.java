@@ -8,8 +8,6 @@ import javafx.scene.paint.Color;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.openqa.selenium.chrome.ChromeDriver;
-import utils.JavaTools;
 import utils.WebTools;
 
 import java.io.IOException;
@@ -18,7 +16,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static Main.SingleInvestment.GOOGLE_QUERY;
 import static utils.JFXTools.textWithColor;
 
 public final class TrendingStocks {
@@ -51,7 +48,13 @@ public final class TrendingStocks {
                     String.format("%.2f", quote.getDouble("regularMarketChangePercent")) + "%",
                     color),
                 arrow);
-        trendingStock.setOnMouseClicked(e -> WebTools.searchWebForStock(symbol));
+        trendingStock.setOnMouseClicked(e -> {
+          try {
+            WebTools.searchWebForStock(symbol);
+          } catch (InterruptedException ex) {
+            ex.printStackTrace();
+          }
+        });
         trendingStock.setCursor(Cursor.HAND);
         stockList.getChildren().addAll(trendingStock, new Separator());
       }

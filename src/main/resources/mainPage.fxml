@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ContextMenu?>
@@ -16,9 +15,9 @@
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1542.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.MainPageController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1253.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.MainPageController">
     <children>
-        <ImageView fitHeight="238.0" fitWidth="1556.0" layoutX="-14.0" layoutY="-1.0">
+        <ImageView fitHeight="238.0" fitWidth="1267.0" layoutX="-14.0" layoutY="-1.0">
             <image>
                 <Image url="@purple.png" />
             </image>
@@ -34,30 +33,28 @@
                 <Font name="System Bold" size="48.0" />
             </font>
         </Text>
-      <ScrollPane fx:id="scrollPane" layoutX="331.0" layoutY="273.0" prefHeight="510.0" prefWidth="757.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: transparent;">
+      <ScrollPane fx:id="scrollPane" layoutX="331.0" layoutY="273.0" prefHeight="435.0" prefWidth="621.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: transparent;">
          <content>
-            <VBox fx:id="newsBox" prefHeight="490.0" prefWidth="742.0" />
+            <VBox fx:id="newsBox" prefHeight="431.0" prefWidth="614.0" />
          </content>
       </ScrollPane>
       <Button fx:id="addStockToPFolio" layoutX="1452.0" layoutY="84.0" mnemonicParsing="false" onAction="#addStockToPortfolio" style="-fx-background-color: pink;" text="+" visible="false" />
-      <MenuButton fx:id="myPortfolio" layoutX="1148.0" layoutY="34.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="138.0" style="-fx-background-color: pink;" text="My Portfolio">
+      <MenuButton fx:id="myPortfolio" layoutX="875.0" layoutY="35.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="138.0" style="-fx-background-color: pink;" text="My Portfolio">
          <contextMenu>
             <ContextMenu />
          </contextMenu></MenuButton>
       <Button layoutX="38.0" layoutY="154.0" mnemonicParsing="false" onAction="#openForexWindow" style="-fx-background-color: grey; -fx-label-padding: 3; -fx-border-radius: 20 20 20 20;" text="Forex exchange" />
-      <Button layoutX="156.0" layoutY="154.0" mnemonicParsing="false" onAction="#openCryptoWebsite" prefHeight="32.0" prefWidth="113.0" style="-fx-background-color: grey; -fx-label-padding: 3; -fx-border-radius: 20 20 20 20;" text="Cryptocurrencies" />
-      <ScrollPane layoutX="14.0" layoutY="276.0" prefHeight="502.0" prefWidth="306.0" style="-fx-background-color: transparent;">
+      <ScrollPane fx:id="trendingPane" layoutX="14.0" layoutY="276.0" prefHeight="435.0" prefWidth="306.0" style="-fx-background-color: transparent;">
          <content>
-            <VBox fx:id="stockList" prefHeight="494.0" prefWidth="286.0" style="-fx-border-width: 0 0 0 0;" />
+            <VBox fx:id="stockList" prefHeight="428.0" prefWidth="286.0" style="-fx-border-width: 0 0 0 0;" />
          </content>
       </ScrollPane>
-      <Button contentDisplay="CENTER" graphicTextGap="10.0" layoutX="1325.0" layoutY="34.0" mnemonicParsing="false" onAction="#setNodesVisible" prefHeight="38.0" prefWidth="150.0" style="-fx-background-color: pink;" text="Edit Portfolio" />
-      <TextField fx:id="portfolioStock" layoutX="1326.0" layoutY="84.0" onAction="#addStockToPortfolio" prefHeight="26.0" prefWidth="121.0" promptText="Symbol/Company" visible="false" />
-      <Label fx:id="stockPresentLabel" layoutX="1299.0" layoutY="177.0" prefHeight="18.0" prefWidth="202.0" />
-      <TextField fx:id="cryptoName" layoutX="155.0" layoutY="203.0" onAction="#openCrypto" prefHeight="26.0" prefWidth="114.0" promptText="Enter crypto name" visible="false" />
-      <Button layoutX="282.0" layoutY="154.0" mnemonicParsing="false" onAction="#searchForOtherStocks" prefHeight="32.0" prefWidth="195.0" style="-fx-background-color: grey; -fx-label-padding: 3; -fx-border-radius: 20 20 20 20;" text="Search for non-american stocks" />
-      <TextField fx:id="otherStock" layoutX="282.0" layoutY="203.0" onAction="#searchWebForStock" prefHeight="26.0" prefWidth="195.0" promptText="Enter Symbol or company name" visible="false" />
-      <Text layoutX="13.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trending Stocks" wrappingWidth="114.40000000000009">
+      <Button contentDisplay="CENTER" graphicTextGap="10.0" layoutX="1029.0" layoutY="35.0" mnemonicParsing="false" onAction="#setNodesVisible" prefHeight="38.0" prefWidth="150.0" style="-fx-background-color: pink;" text="Edit Portfolio" />
+      <TextField fx:id="portfolioStock" layoutX="1040.0" layoutY="84.0" onAction="#addStockToPortfolio" prefHeight="26.0" prefWidth="121.0" promptText="Symbol/Company" visible="false" />
+      <Label fx:id="stockPresentLabel" layoutX="843.0" layoutY="119.0" prefHeight="18.0" prefWidth="202.0" />
+      <TextField fx:id="cryptoName" alignment="CENTER" layoutX="157.0" layoutY="154.0" onAction="#openCrypto" prefHeight="32.0" prefWidth="114.0" promptText="Search Crypto" style="-fx-background-color: Grey;" />
+      <TextField fx:id="otherStock" alignment="CENTER" layoutX="282.0" layoutY="154.0" onAction="#searchWebForStock" prefHeight="32.0" prefWidth="195.0" promptText="Search for non-american stocks" style="-fx-background-color: grey;" />
+      <Text fx:id="trendingStocksText" layoutX="13.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trending Stocks" wrappingWidth="114.40000000000009">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -67,77 +64,57 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Text>
-      <TextField fx:id="symbolInvested" layoutX="1217.0" layoutY="248.0" prefHeight="26.0" prefWidth="98.0" promptText="Symbol" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: grey;" />
-      <TextField fx:id="sharesBought" layoutX="1331.0" layoutY="248.0" prefHeight="26.0" prefWidth="150.0" promptText="Bought S shares at x price " style="-fx-background-color: transparent; -fx-border-color: grey; -fx-border-width: 0 0 1 0;" />
-      <Button contentDisplay="CENTER" graphicTextGap="10.0" layoutX="1487.0" layoutY="248.0" mnemonicParsing="false" onAction="#addInvestment" prefHeight="26.0" prefWidth="42.0" style="-fx-background-color: pink;" text="Add" />
-      <Text layoutX="1103.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My investments" wrappingWidth="114.40000000000009">
+      <TextField fx:id="symbolInvested" layoutX="981.0" layoutY="156.0" prefHeight="27.0" prefWidth="82.0" promptText="Symbol" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: grey;" />
+      <TextField fx:id="sharesBought" layoutX="980.0" layoutY="189.0" prefHeight="27.0" prefWidth="157.0" promptText="Bought S shares at x price " style="-fx-background-color: transparent; -fx-border-color: grey; -fx-border-width: 0 0 1 0;" />
+      <Button contentDisplay="CENTER" graphicTextGap="10.0" layoutX="1158.0" layoutY="190.0" mnemonicParsing="false" onAction="#addInvestment" prefHeight="26.0" prefWidth="42.0" style="-fx-background-color: pink;" text="Add" />
+      <Text layoutX="988.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My investments" wrappingWidth="114.40000000000009">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Text>
-      <Text layoutX="1103.0" layoutY="316.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symbol" wrappingWidth="42.40000000000009">
+      <Text layoutX="980.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symbol" wrappingWidth="42.40000000000009">
          <font>
             <Font name="System Bold" size="11.0" />
          </font></Text>
-      <Text layoutX="1160.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Stock Value" wrappingWidth="63.99997558593759">
+      <Text layoutX="1037.0" layoutY="256.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Stock Value" wrappingWidth="63.99997558593759">
          <font>
             <Font name="System Bold" size="11.0" />
          </font></Text>
-      <Text layoutX="1240.0" layoutY="309.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bought S shares at X price" wrappingWidth="87.99997558593759">
+      <Text layoutX="1128.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Value" wrappingWidth="55.99997558593759">
          <font>
             <Font name="System Bold" size="11.0" />
          </font></Text>
-      <Text layoutX="1339.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Value at purchase" wrappingWidth="55.99997558593759">
-         <font>
-            <Font name="System Bold" size="11.0" />
-         </font></Text>
-      <Text layoutX="1406.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Value" wrappingWidth="55.99997558593759">
-         <font>
-            <Font name="System Bold" size="11.0" />
-         </font></Text>
-      <Text layoutX="1474.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Profits / Losses" wrappingWidth="55.99997558593759">
-         <font>
-            <Font name="System Bold" size="11.0" />
-         </font></Text>
-      <VBox fx:id="symbolBox" alignment="TOP_CENTER" layoutX="1085.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="currentStockValueBox" alignment="TOP_CENTER" layoutX="1153.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="valueAtPurchase" alignment="TOP_CENTER" layoutX="1328.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="currentValueBox" alignment="TOP_CENTER" layoutX="1395.0" layoutY="335.0" prefHeight="200.0" prefWidth="77.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="profitsBox" alignment="TOP_CENTER" layoutX="1463.0" layoutY="335.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
-      <VBox fx:id="sharesBoughtBox" alignment="TOP_CENTER" layoutX="1231.0" layoutY="335.0" prefHeight="200.0" prefWidth="106.0" style="-fx-spacing: 10;" />
-      <AnchorPane fx:id="pane" layoutX="343.0" layoutY="276.0" prefHeight="358.0" prefWidth="283.0" style="-fx-background-color: #c3bbbb; -fx-background-radius: 20 20 20 20;" visible="false">
+      <VBox fx:id="symbolBox" alignment="TOP_CENTER" layoutX="962.0" layoutY="283.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
+      <VBox fx:id="currentStockValueBox" alignment="TOP_CENTER" layoutX="1030.0" layoutY="283.0" prefHeight="200.0" prefWidth="78.0" style="-fx-spacing: 10;" />
+      <VBox fx:id="currentValueBox" alignment="TOP_CENTER" layoutX="1107.0" layoutY="283.0" prefHeight="200.0" prefWidth="98.0" style="-fx-spacing: 10;" />
+      <AnchorPane fx:id="pane" layoutX="100.0" layoutY="276.0" prefHeight="358.0" prefWidth="283.0" style="-fx-background-color: #c3bbbb; -fx-background-radius: 20 20 20 20;" visible="false">
          <children>
             <VBox fx:id="singleStockBox" layoutX="14.0" layoutY="14.0" prefHeight="328.0" prefWidth="265.0" />
          </children>
       </AnchorPane>
-      <ChoiceBox fx:id="rangeSelector" layoutX="800.0" layoutY="660.0" nodeOrientation="LEFT_TO_RIGHT" prefWidth="150.0" style="-fx-background-color: #DDD2D2FF;" visible="false" />
-      <Text layoutX="1163.0" layoutY="694.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total gains:">
+      <ChoiceBox fx:id="rangeSelector" layoutX="600.0" layoutY="660.0" nodeOrientation="LEFT_TO_RIGHT" prefWidth="150.0" style="-fx-background-color: #DDD2D2FF;" visible="false" />
+      <Text layoutX="971.0" layoutY="610.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total gains:">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <Text layoutX="1307.0" layoutY="694.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spent:">
+      <Text layoutX="1053.0" layoutY="609.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spent:">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Text>
-      <Text layoutX="1288.0" layoutY="728.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Value:">
+      <Text layoutX="1034.0" layoutY="643.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Value:">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Text>
-      <Text layoutX="1287.0" layoutY="766.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Profits/Losses:">
+      <Text layoutX="1033.0" layoutY="681.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Profits/Losses:">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Text>
-      <Text fx:id="totalSpent" layoutX="1386.0" layoutY="694.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="131.20004882812532" />
-      <Text fx:id="totalCurrentValue" layoutX="1386.0" layoutY="728.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="131.2000488281251" />
-      <Text fx:id="totalGains" layoutX="1386.0" layoutY="766.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="131.2000488281251" />
-      <JFXButton layoutX="1025.0" layoutY="249.0" onAction="#refreshInvestments" ripplerFill="WHITE" style="-fx-background-color: E2DCDCFF;" text="Refresh">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </JFXButton>
+      <Text fx:id="totalSpent" layoutX="1132.0" layoutY="609.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="131.20004882812532" />
+      <Text fx:id="totalCurrentValue" layoutX="1132.0" layoutY="643.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="131.2000488281251" />
+      <Text fx:id="totalGains" layoutX="1132.0" layoutY="681.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="131.2000488281251" />
     </children>
 </AnchorPane>

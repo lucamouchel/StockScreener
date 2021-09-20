@@ -19,35 +19,28 @@ public class CreateLineChart {
   public static AreaChart<String, Number> createChart(String symbol, String rangeSelected)
       throws IOException, InterruptedException {
 
-    ArrayList<Double> values = IndividualStock.chartData(symbol, rangeSelected);
-    ArrayList<String> dates = IndividualStock.dates;
+    ArrayList<Double> values = Stock.chartData(symbol, rangeSelected);
+    ArrayList<String> dates = Stock.dates;
     Map<String, Range> ranges =
         Map.of(
-            "1 month",
-            Range.ONE_MONTH,
-            "3 months",
-            Range.THREE_MONTHS,
-            "6 months",
-            Range.SIX_MONTHS,
-            "1 year",
-            Range.ONE_YEAR,
-            "2 years",
-            Range.TWO_YEARS,
-            "5 years",
-            Range.FIVE_YEARS,
-            "Max",
-            Range.MAX_YEARS);
+            "1 month", Range.ONE_MONTH,
+            "3 months", Range.THREE_MONTHS,
+            "6 months", Range.SIX_MONTHS,
+            "1 year", Range.ONE_YEAR,
+            "2 years", Range.TWO_YEARS,
+            "5 years", Range.FIVE_YEARS,
+            "Max", Range.MAX_YEARS);
     XYChart.Series<String, Number> series = new XYChart.Series<>();
 
     series.setName(rangeSelected);
     final CategoryAxis xAxis = new CategoryAxis();
     final NumberAxis yAxis = new NumberAxis();
-    yAxis.setLabel(IndividualStock.chartCurrency);
+    yAxis.setLabel(Stock.chartCurrency);
 
     AreaChart<String, Number> areaChart = new AreaChart<>(xAxis, yAxis);
     areaChart.setPrefHeight(400);
     areaChart.setPrefWidth(494);
-    areaChart.setLayoutX(620);
+    areaChart.setLayoutX(450);
     areaChart.setLayoutY(250);
     areaChart.setTitle("Stock Monitoring - " + symbol);
 
