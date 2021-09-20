@@ -18,7 +18,7 @@
   - Crypto-currencies: Clicking on the button will allow you to type the name of a cryptocurrency and open a website with in-depth information.
   - Non-american stocks: The libraries used only allow to search for american stocks so this button will allow to search for whichever stock and will lead the user to a webpage with in-depth information on the stock.
 
-![Homepage-noEdits](https://user-images.githubusercontent.com/73081373/128522529-f95fd6ea-5252-4824-8717-e3d66cf7d0c4.png) View on the home page when first running the application.
+![image](https://user-images.githubusercontent.com/73081373/134036804-b127ba42-f234-4280-be2c-9aa86903de16.png) View on the home page when first running the application.
 
 
 
@@ -45,8 +45,8 @@ Furthermore, you need to download chromedriver at https://chromedriver.chromium.
 Place the .exe driver such that it will have the following path __C:\\Program Files (x86)\\chromedriver.exe__ otherwise selenium will not work.
 
 Annex:
-Example of 3 different investments (the first one consist of **36 shares bought at the price of 13.74**) and clicking on a stock in your portfolio
-![image](https://user-images.githubusercontent.com/73081373/128526372-ff5d7c25-60f2-4808-87c5-894e77a070d7.png)
+Example of 3 different investments and clicking on a stock in your portfolio
+![image](https://user-images.githubusercontent.com/73081373/134037512-1949a49f-9a65-4930-99bb-d033f05133e6.png)
 
 
 
